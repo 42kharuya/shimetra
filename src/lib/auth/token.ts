@@ -46,25 +46,35 @@ export async function createMagicLinkToken(email: string): Promise<string> {
  * トークンを検証して対応するメールアドレスを返す。
  * 無効（存在しない / 期限切れ / 使用済み）の場合は null を返す。
  *
- * 【注意】findUnique → チェック → update のパターンは TOCTOU（競合）が起きる。
- * update の where 条件で "usedAt が null かつ期限内" を DB 側で一発確認し、
- * 1 つのクエリで atomic に「確認 + 使用済みマーク」を行う。
+ * 【設計】
+ * prisma.update の where は @unique フィールドのみ確実にフィルタされる。
+ * 非ユニーク列（usedAt / expiresAt）の追加条件は adapter-pg では動作が
+ * 不安定なため、updateMany（任意 where を完全サポート）を使う。
+ * - updateMany で "未使用かつ期限内" を条件に atomic にマーク
+ * - count === 0 なら無効（存在しない / 使用済み / 期限切れ）
+ * - count > 0 なら有効 → 別途 email を取得して返す
  */
 export async function consumeMagicLinkToken(
   token: string,
 ): Promise<string | null> {
-  try {
-    const record = await prisma.magicLinkToken.update({
-      where: {
-        token,
-        usedAt: null,            // 未使用であること
-        expiresAt: { gte: new Date() }, // 期限内であること
-      },
-      data: { usedAt: new Date() },
-    });
-    return record.email;
-  } catch {
-    // 該当レコードなし（存在しない / 使用済み / 期限切れ）
-    return null;
-  }
+  const now = new Date();
+
+  // Step 1: email を先に取得（存在確認）
+  const record = await prisma.magicLinkToken.findUnique({ where: { token } });
+  if (!record) return null;
+
+  // Step 2: "未使用かつ期限内" の場合のみ atomic に usedAt をセット
+  const { count } = await prisma.magicLinkToken.updateMany({
+    where: {
+      token,
+      usedAt: null,               // 未使用であること
+      expiresAt: { gte: now },    // 期限内であること
+    },
+    data: { usedAt: now },
+  });
+
+  // count === 0 は「使用済み or 期限切れ」
+  if (count === 0) return null;
+
+  return record.email;
 }
