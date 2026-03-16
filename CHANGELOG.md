@@ -4,6 +4,8 @@
 
 ## Unreleased
 
+- feat: `POST /api/stripe/checkout` を追加（Stripe Checkout Session 作成・Pro アップグレード導線）
+- feat: `/billing` に Free/Pro 差分テーブルと Upgrade CTA を追加（非ログイン時は /login へリダイレクト）
 - feat: 締切作成フォーム（/deadline/new）を実装（企業名/種別/締切日時の必須入力・API送信・エラー表示・作成後 /dashboard へ遷移）
 - feat: ダッシュボードUI を実装（締切近い順表示・ステータスをセレクトで即更新・0件時に2件登録を促す空状態UI）
 - feat: LP（/）実装（価値提案・Free/Pro差分・価格 980円/月・CTA → /login）
