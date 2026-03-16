@@ -1,5 +1,7 @@
 # Web-AI-Coding-Template
 
+ローカル起動（アプリ）: `npm install` → `npm run dev` → http://localhost:3000 を開く（初回のみ依存関係のインストールが必要）。
+
 ## このリポジトリの目的
 
 このリポジトリは、GitHub Copilot と一緒に「スモールビジネス向けの小さなプロダクト」を立ち上げるためのテンプレートです。
