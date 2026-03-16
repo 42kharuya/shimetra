@@ -13,7 +13,8 @@
     "db:studio": "prisma studio",
     "test:mailer": "npx tsx src/lib/mailer/__tests__/sendEmail.test.ts",
     "test:auth": "npx tsx src/lib/auth/__tests__/auth.test.ts",
-    "test:deadlines": "npx tsx src/lib/deadlines/__tests__/deadlines.test.ts"
+    "test:deadlines": "npx tsx src/lib/deadlines/__tests__/deadlines.test.ts",
+    "test:format": "npx tsx src/lib/deadlines/__tests__/format.test.ts"
   },
   "dependencies": {
     "@prisma/adapter-pg": "^7.5.0",
