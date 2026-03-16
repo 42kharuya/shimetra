@@ -9,6 +9,19 @@
 # Logs
 *.log
 
+# Node / Next.js
+node_modules/
+.next/
+out/
+coverage/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# TypeScript
+*.tsbuildinfo
+
 # Env
 .env
 .env.*
