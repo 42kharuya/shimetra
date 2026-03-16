@@ -128,9 +128,18 @@ export async function findAndDeliverNotifications(): Promise<NotifyResult> {
     skipped: 0,
   };
 
+  // isProUser のキャッシュ: 同一 userId への重複 DB クエリを防ぐ（N+1対策）
+  const proCache = new Map<string, boolean>();
+  async function isProUserCached(userId: string): Promise<boolean> {
+    if (proCache.has(userId)) return proCache.get(userId)!;
+    const result = await isProUser(userId);
+    proCache.set(userId, result);
+    return result;
+  }
+
   for (const item of items) {
     // ユーザーのプランに応じてオフセットを決定
-    const isPro = await isProUser(item.userId);
+    const isPro = await isProUserCached(item.userId);
     const offsets = isPro ? OFFSETS_PRO : OFFSETS_FREE;
 
     for (const offsetMinutes of offsets) {
