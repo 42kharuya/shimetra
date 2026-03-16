@@ -4,6 +4,7 @@
 
 ## Unreleased
 
+- feat: `POST /api/stripe/webhook` を追加（Stripe 署名検証・subscriptions 冪等 upsert・Pro 判定ルール反映）
 - feat: `POST /api/stripe/checkout` を追加（Stripe Checkout Session 作成・Pro アップグレード導線）
 - feat: `/billing` に Free/Pro 差分テーブルと Upgrade CTA を追加（非ログイン時は /login へリダイレクト）
 - feat: 締切作成フォーム（/deadline/new）を実装（企業名/種別/締切日時の必須入力・API送信・エラー表示・作成後 /dashboard へ遷移）
