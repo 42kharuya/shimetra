@@ -14,12 +14,15 @@ function getStripeClient(): Stripe {
   return new Stripe(secretKey);
 }
 
-// シングルトン（モジュールキャッシュ活用）
+// 遅延初期化シングルトン（モジュール読み込み時には初期化しない）
 const globalForStripe = globalThis as unknown as { stripe?: Stripe };
 
-export const stripe: Stripe =
-  globalForStripe.stripe ?? getStripeClient();
-
-if (process.env.NODE_ENV !== "production") {
-  globalForStripe.stripe = stripe;
+export function getStripe(): Stripe {
+  if (!globalForStripe.stripe) {
+    globalForStripe.stripe = getStripeClient();
+  }
+  return globalForStripe.stripe;
 }
+
+/** @deprecated getStripe() を使用してください */
+export const stripe = { get client() { return getStripe(); } };

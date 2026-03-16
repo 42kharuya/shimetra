@@ -12,10 +12,12 @@ export function UpgradeButton() {
 
     try {
       const res = await fetch("/api/stripe/checkout", { method: "POST" });
-      const data = await res.json();
 
-      if (!res.ok || !data.url) {
-        setError(data.error ?? "エラーが発生しました。再試行してください。");
+      // JSON パース失敗（HTMLエラーページなど）にも対応
+      const data = await res.json().catch(() => null);
+
+      if (!res.ok || !data?.url) {
+        setError(data?.error ?? "エラーが発生しました。再試行してください。");
         return;
       }
 

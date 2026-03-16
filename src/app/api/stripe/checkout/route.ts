@@ -19,7 +19,7 @@
  */
 import { NextRequest, NextResponse } from "next/server";
 import { getSession } from "@/lib/auth/session";
-import { stripe } from "@/lib/stripe";
+import { getStripe } from "@/lib/stripe";
 import { prisma } from "@/lib/prisma";
 
 function getRequiredEnv(key: string): string {
@@ -54,7 +54,7 @@ export async function POST(req: NextRequest) {
     const stripeCustomerId = existingSub?.stripeCustomerId ?? undefined;
 
     // 4. Checkout Session 作成
-    const checkoutSession = await stripe.checkout.sessions.create({
+    const checkoutSession = await getStripe().checkout.sessions.create({
       mode: "subscription",
       payment_method_types: ["card"],
       customer: stripeCustomerId,
