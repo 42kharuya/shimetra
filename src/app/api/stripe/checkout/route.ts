@@ -73,8 +73,12 @@ export async function POST(req: NextRequest) {
           quantity: 1,
         },
       ],
-      metadata: {
-        userId,
+      // subscription_data.metadata に設定することで
+      // Subscription オブジェクトに userId が引き継がれ、webhook で参照できる
+      subscription_data: {
+        metadata: {
+          userId,
+        },
       },
       success_url: `${appUrl}/billing/success?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${appUrl}/billing/cancel`,
