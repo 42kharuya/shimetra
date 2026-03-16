@@ -45,20 +45,26 @@ export async function createMagicLinkToken(email: string): Promise<string> {
 /**
  * トークンを検証して対応するメールアドレスを返す。
  * 無効（存在しない / 期限切れ / 使用済み）の場合は null を返す。
- * 有効なら usedAt を記録して使い捨てにする（トランザクション）。
+ *
+ * 【注意】findUnique → チェック → update のパターンは TOCTOU（競合）が起きる。
+ * update の where 条件で "usedAt が null かつ期限内" を DB 側で一発確認し、
+ * 1 つのクエリで atomic に「確認 + 使用済みマーク」を行う。
  */
 export async function consumeMagicLinkToken(
   token: string,
 ): Promise<string | null> {
-  const record = await prisma.magicLinkToken.findUnique({ where: { token } });
-  if (!record) return null;
-  if (record.usedAt) return null; // 使用済み
-  if (record.expiresAt < new Date()) return null; // 期限切れ
-
-  await prisma.magicLinkToken.update({
-    where: { id: record.id },
-    data: { usedAt: new Date() },
-  });
-
-  return record.email;
+  try {
+    const record = await prisma.magicLinkToken.update({
+      where: {
+        token,
+        usedAt: null,            // 未使用であること
+        expiresAt: { gte: new Date() }, // 期限内であること
+      },
+      data: { usedAt: new Date() },
+    });
+    return record.email;
+  } catch {
+    // 該当レコードなし（存在しない / 使用済み / 期限切れ）
+    return null;
+  }
 }
