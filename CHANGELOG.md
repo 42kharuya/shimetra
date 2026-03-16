@@ -4,6 +4,8 @@
 
 ## Unreleased
 
+- feat: `PATCH /api/deadlines/:id` を追加（ステータス更新・部分更新、submitted 時のみ status_changed_at を設定、ユーザースコープ保証）
+- feat: `DELETE /api/deadlines/:id` を追加（ログインユーザーの自分のアイテムのみ削除可）
 - feat: `GET /api/deadlines` を追加（締切アイテム一覧取得API、deadline_at 昇順・ログインユーザーのみ返却）
 - feat: `POST /api/deadlines` を追加（締切アイテム作成API、入力バリデーション・Free 10件制限・ユーザースコープ保証）
 - feat: メールマジックリンク認証を追加（/login でメール入力→リンク送付→クリックでログイン/サインアップ、未ログイン時は /login へリダイレクト）

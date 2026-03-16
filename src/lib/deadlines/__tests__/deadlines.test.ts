@@ -3,16 +3,17 @@
  * 実行: npx tsx src/lib/deadlines/__tests__/deadlines.test.ts
  *
  * テスト戦略:
- *  - validateCreateDeadline: DB不要な純粋関数のみ対象
+ *  - validateCreateDeadline / validateUpdateDeadline: DB不要な純粋関数のみ対象
  *  - Free枠制限・DB保存・認証はRoute Handler経由の手動確認手順を参照
  *  - GET /api/deadlines: 純粋関数なし。手動確認手順（下記）で一覧取得・順序を検証する
  *    1. ログイン済みで GET /api/deadlines → 自ユーザーのアイテムが deadline_at 昇順で返る
  *    2. 未ログインで GET /api/deadlines → 401 が返る
  *    3. 別ユーザーのアイテムが混入しないことを複数ユーザーで確認
+ *  - PATCH /DELETEE /api/deadlines/:id: 手動確認手順を参照
  */
 
 import assert from "node:assert/strict";
-import { validateCreateDeadline } from "../validate";
+import { validateCreateDeadline, validateUpdateDeadline } from "../validate";
 
 const VALID_BASE = {
   company_name: "株式会社テスト",
@@ -187,6 +188,100 @@ async function runAll() {
     assert.ok(!r.ok);
     if (r.ok) return;
     assert.ok(r.errors.length >= 3);
+  });
+
+  // ────────────────────────────────────────────────────────────────────
+  // validateUpdateDeadline テスト
+  // ────────────────────────────────────────────────────────────────────
+  console.log("\nDeadline 更新バリデーション テスト\n");
+
+  await test("status だけ指定して ok:true を返す", () => {
+    const r = validateUpdateDeadline({ status: "submitted" });
+    assert.ok(r.ok);
+    if (!r.ok) return;
+    assert.equal(r.data.status, "submitted");
+  });
+
+  await test("status = submitted が正しく返る", () => {
+    for (const s of ["todo", "submitted", "done", "canceled"]) {
+      const r = validateUpdateDeadline({ status: s });
+      assert.ok(r.ok, `status=${s} が ok:false になった`);
+    }
+  });
+
+  await test("company_name だけ指定して ok:true を返す", () => {
+    const r = validateUpdateDeadline({ company_name: "新会社名" });
+    assert.ok(r.ok);
+    if (!r.ok) return;
+    assert.equal(r.data.companyName, "新会社名");
+  });
+
+  await test("link を null で指定すると data.link が null になる", () => {
+    const r = validateUpdateDeadline({ status: "todo", link: null });
+    assert.ok(r.ok);
+    if (!r.ok) return;
+    assert.equal(r.data.link, null);
+  });
+
+  await test("memo を null で指定すると data.memo が null になる", () => {
+    const r = validateUpdateDeadline({ status: "done", memo: null });
+    assert.ok(r.ok);
+    if (!r.ok) return;
+    assert.equal(r.data.memo, null);
+  });
+
+  await test("フィールドを 1 つも指定しないとエラー", () => {
+    const r = validateUpdateDeadline({});
+    assert.ok(!r.ok);
+    if (r.ok) return;
+    assert.ok(r.errors.some((e) => e.field === "_body"));
+  });
+
+  await test("body が非オブジェクトならエラー（update）", () => {
+    const r = validateUpdateDeadline(null);
+    assert.ok(!r.ok);
+  });
+
+  await test("status が不正値ならエラー（update）", () => {
+    const r = validateUpdateDeadline({ status: "invalid" });
+    assert.ok(!r.ok);
+    if (r.ok) return;
+    assert.ok(r.errors.some((e) => e.field === "status"));
+  });
+
+  await test("company_name が空文字ならエラー（update）", () => {
+    const r = validateUpdateDeadline({ company_name: "" });
+    assert.ok(!r.ok);
+    if (r.ok) return;
+    assert.ok(r.errors.some((e) => e.field === "company_name"));
+  });
+
+  await test("company_name が 101 文字超ならエラー（update）", () => {
+    const r = validateUpdateDeadline({ company_name: "あ".repeat(101) });
+    assert.ok(!r.ok);
+    if (r.ok) return;
+    assert.ok(r.errors.some((e) => e.field === "company_name"));
+  });
+
+  await test("link が http(s) 以外ならエラー（update）", () => {
+    const r = validateUpdateDeadline({ link: "ftp://example.com" });
+    assert.ok(!r.ok);
+    if (r.ok) return;
+    assert.ok(r.errors.some((e) => e.field === "link"));
+  });
+
+  await test("deadline_at が不正な文字列ならエラー（update）", () => {
+    const r = validateUpdateDeadline({ deadline_at: "not-a-date" });
+    assert.ok(!r.ok);
+    if (r.ok) return;
+    assert.ok(r.errors.some((e) => e.field === "deadline_at"));
+  });
+
+  await test("memo が 1001 文字超ならエラー（update）", () => {
+    const r = validateUpdateDeadline({ memo: "あ".repeat(1001) });
+    assert.ok(!r.ok);
+    if (r.ok) return;
+    assert.ok(r.errors.some((e) => e.field === "memo"));
   });
 
   console.log(`\n${passed} passed, ${failed} failed\n`);
