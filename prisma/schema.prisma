@@ -1,0 +1,115 @@
+// This is your Prisma schema file,
+// see Prisma docs: https://pris.ly/d/prisma-schema
+
+// ADR 0002: MVPのデータモデル（最小スキーマ）に準拠
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// -----------------------------------------------
+// Enums
+// -----------------------------------------------
+
+/// 締切アイテムの種別
+enum DeadlineKind {
+  es
+  briefing
+  interview
+  other
+}
+
+/// 締切アイテムのステータス
+enum DeadlineStatus {
+  todo
+  submitted
+  done
+  canceled
+}
+
+/// サブスクリプションのプラン
+enum SubscriptionPlan {
+  free
+  pro
+}
+
+/// 通知配信のステータス
+enum NotificationStatus {
+  scheduled
+  sent
+  failed
+}
+
+// -----------------------------------------------
+// Tables
+// -----------------------------------------------
+
+model User {
+  id        String   @id @default(uuid()) @db.Uuid
+  email     String   @unique
+  createdAt DateTime @default(now()) @map("created_at")
+
+  deadlineItems  DeadlineItem[]
+  subscription   Subscription?
+
+  @@map("users")
+}
+
+model DeadlineItem {
+  id              String         @id @default(uuid()) @db.Uuid
+  userId          String         @map("user_id") @db.Uuid
+  companyName     String         @map("company_name")
+  kind            DeadlineKind
+  deadlineAt      DateTime       @map("deadline_at") @db.Timestamptz
+  status          DeadlineStatus @default(todo)
+  link            String?
+  memo            String?
+  statusChangedAt DateTime?      @map("status_changed_at") @db.Timestamptz
+  createdAt       DateTime       @default(now()) @map("created_at")
+  updatedAt       DateTime       @updatedAt @map("updated_at")
+
+  user                  User                   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  notificationDeliveries NotificationDelivery[]
+
+  // AC: deadline_items(user_id, deadline_at) 複合インデックス
+  @@index([userId, deadlineAt], name: "idx_deadline_items_user_id_deadline_at")
+  @@map("deadline_items")
+}
+
+model Subscription {
+  id                   String           @id @default(uuid()) @db.Uuid
+  userId               String           @unique @map("user_id") @db.Uuid
+  stripeCustomerId     String           @unique @map("stripe_customer_id")
+  stripeSubscriptionId String           @unique @map("stripe_subscription_id")
+  // status は Stripe準拠の文字列で保持（enum縛りなし: trialing | active | past_due | canceled | unpaid | incomplete | incomplete_expired | paused）
+  status               String
+  plan                 SubscriptionPlan @default(free)
+  currentPeriodEnd     DateTime?        @map("current_period_end") @db.Timestamptz
+  updatedAt            DateTime         @updatedAt @map("updated_at")
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("subscriptions")
+}
+
+model NotificationDelivery {
+  id                String             @id @default(uuid()) @db.Uuid
+  deadlineItemId    String             @map("deadline_item_id") @db.Uuid
+  offsetMinutes     Int                @map("offset_minutes")
+  scheduledFor      DateTime           @map("scheduled_for") @db.Timestamptz
+  sentAt            DateTime?          @map("sent_at") @db.Timestamptz
+  providerMessageId String?            @map("provider_message_id")
+  status            NotificationStatus @default(scheduled)
+  error             String?
+  createdAt         DateTime           @default(now()) @map("created_at")
+
+  deadlineItem DeadlineItem @relation(fields: [deadlineItemId], references: [id], onDelete: Cascade)
+
+  // AC: notification_deliveries(deadline_item_id, offset_minutes) 一意制約（重複送信防止）
+  @@unique([deadlineItemId, offsetMinutes], name: "uq_notification_deliveries_item_offset")
+  @@map("notification_deliveries")
+}

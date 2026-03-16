@@ -4,6 +4,7 @@
 
 ## Unreleased
 
+- db: Prisma + Postgres スキーマ追加（users / deadline_items / subscriptions / notification_deliveries）
 - docs: 技術選定/デプロイ/SEO-GTM/サポート運用/ポストモーテムのテンプレを追加
 - ops: Runbook/Launch Checklist/Analytics テンプレを補強
 - github: Experiment/Incident のIssueテンプレを追加
