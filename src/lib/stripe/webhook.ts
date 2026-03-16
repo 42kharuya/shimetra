@@ -52,9 +52,11 @@ export async function upsertSubscription(
       ? subscription.customer
       : subscription.customer.id;
 
+  // Stripe SDK v20 では current_period_end は SubscriptionItem に移動
+  const firstItem = subscription.items.data[0];
   const currentPeriodEnd =
-    subscription.current_period_end != null
-      ? new Date(subscription.current_period_end * 1000)
+    firstItem?.current_period_end != null
+      ? new Date(firstItem.current_period_end * 1000)
       : null;
 
   const plan = resolveSubscriptionPlan(subscription.status, currentPeriodEnd);
