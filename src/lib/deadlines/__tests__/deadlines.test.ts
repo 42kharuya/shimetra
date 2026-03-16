@@ -5,6 +5,10 @@
  * テスト戦略:
  *  - validateCreateDeadline: DB不要な純粋関数のみ対象
  *  - Free枠制限・DB保存・認証はRoute Handler経由の手動確認手順を参照
+ *  - GET /api/deadlines: 純粋関数なし。手動確認手順（下記）で一覧取得・順序を検証する
+ *    1. ログイン済みで GET /api/deadlines → 自ユーザーのアイテムが deadline_at 昇順で返る
+ *    2. 未ログインで GET /api/deadlines → 401 が返る
+ *    3. 別ユーザーのアイテムが混入しないことを複数ユーザーで確認
  */
 
 import assert from "node:assert/strict";

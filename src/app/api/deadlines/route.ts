@@ -1,4 +1,18 @@
 /**
+ * GET /api/deadlines
+ *
+ * ログインユーザーの締切アイテムを deadline_at 昇順（近い順）で取得するAPI。
+ *
+ * 認証:
+ *  - セッションクッキーが必要（未ログインは 401）
+ *  - 自分のアイテムのみ返す（userId で必ずフィルタ）
+ *
+ * レスポンス:
+ *  - { ok: true, items: DeadlineItem[] }  200
+ *  - { error: string }                    401 / 500
+ *
+ * ----
+ *
  * POST /api/deadlines
  *
  * 締切アイテムを作成するAPI。
@@ -95,6 +109,34 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ ok: true, item }, { status: 201 });
   } catch (err) {
     console.error("[POST /api/deadlines] unexpected error:", err);
+    return NextResponse.json(
+      { error: "サーバーエラーが発生しました" },
+      { status: 500 },
+    );
+  }
+}
+
+export async function GET(req: NextRequest) {
+  try {
+    // 1. 認証確認
+    const session = await getSession(req);
+    if (!session) {
+      return NextResponse.json(
+        { error: "ログインが必要です" },
+        { status: 401 },
+      );
+    }
+    const userId = session.sub;
+
+    // 2. ログインユーザーのアイテムのみ取得（deadline_at 昇順）
+    const items = await prisma.deadlineItem.findMany({
+      where: { userId },
+      orderBy: { deadlineAt: "asc" },
+    });
+
+    return NextResponse.json({ ok: true, items });
+  } catch (err) {
+    console.error("[GET /api/deadlines] unexpected error:", err);
     return NextResponse.json(
       { error: "サーバーエラーが発生しました" },
       { status: 500 },
