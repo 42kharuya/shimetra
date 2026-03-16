@@ -2,6 +2,7 @@ import { redirect } from "next/navigation";
 import { getSession } from "@/lib/auth/session";
 import { getUserPlan } from "@/lib/deadlines/gate";
 import { UpgradeButton } from "./UpgradeButton";
+import { PortalButton } from "./PortalButton";
 
 export default async function BillingPage() {
   const session = await getSession();
@@ -56,9 +57,12 @@ export default async function BillingPage() {
       {/* CTA */}
       <div className="mt-8">
         {plan === "pro" ? (
-          <p className="text-slate-500">
-            プランの管理・解約は Stripe 管理画面からおこなえます。
-          </p>
+          <div className="space-y-3">
+            <p className="text-sm text-slate-500">
+              解約・支払い方法の変更は Stripe 管理画面からおこなえます。
+            </p>
+            <PortalButton />
+          </div>
         ) : (
           <UpgradeButton />
         )}
