@@ -10,7 +10,8 @@
     "postinstall": "prisma generate",
     "db:migrate": "prisma migrate dev",
     "db:migrate:deploy": "prisma migrate deploy",
-    "db:studio": "prisma studio"
+    "db:studio": "prisma studio",
+    "test:mailer": "npx tsx src/lib/mailer/__tests__/sendEmail.test.ts"
   },
   "dependencies": {
     "@prisma/client": "^7.5.0",
@@ -18,7 +19,8 @@
     "next": "16.1.6",
     "prisma": "^7.5.0",
     "react": "19.0.0",
-    "react-dom": "19.0.0"
+    "react-dom": "19.0.0",
+    "resend": "^6.9.3"
   },
   "devDependencies": {
     "@types/node": "20.11.30",
