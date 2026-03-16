@@ -1,8 +1,9 @@
 /**
- * Stripe クライアント シングルトン
+ * Stripe クライアント ファクトリ
  *
- * - STRIPE_SECRET_KEY 環境変数が必須（未設定時は起動エラー）
+ * - STRIPE_SECRET_KEY 環境変数が必須（未設定時は呼び出し時にエラー）
  * - Node.js ランタイム専用（Edge Runtime では使用不可）
+ * - getStripe() を呼び出すまで初期化されない（遅延初期化）
  */
 import Stripe from "stripe";
 
@@ -23,6 +24,3 @@ export function getStripe(): Stripe {
   }
   return globalForStripe.stripe;
 }
-
-/** @deprecated getStripe() を使用してください */
-export const stripe = { get client() { return getStripe(); } };
