@@ -56,15 +56,20 @@ export async function consumeMagicLinkToken(
   token: string,
 ): Promise<string | null> {
   const record = await prisma.magicLinkToken.findUnique({ where: { token } });
+  console.log("[token] findUnique result:", record
+    ? { id: record.id, usedAt: record.usedAt, expiresAt: record.expiresAt, now: new Date() }
+    : "NOT FOUND"
+  );
   if (!record) return null;
-  if (record.usedAt !== null) return null;      // 使用済み
-  if (record.expiresAt < new Date()) return null; // 期限切れ
+  if (record.usedAt !== null) { console.log("[token] already used"); return null; }
+  if (record.expiresAt < new Date()) { console.log("[token] expired"); return null; }
 
   // id (@unique) のみで update → adapter-pg でも確実に動作する
   await prisma.magicLinkToken.update({
     where: { id: record.id },
     data: { usedAt: new Date() },
   });
+  console.log("[token] update ok, returning email:", record.email);
 
   return record.email;
 }

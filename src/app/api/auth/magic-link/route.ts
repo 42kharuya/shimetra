@@ -31,6 +31,11 @@ export async function POST(req: NextRequest) {
     const magicLink = `${appUrl}/api/auth/verify?token=${token}`;
     const expiryMin = process.env.MAGIC_LINK_EXPIRY_MINUTES ?? "30";
 
+    // dev 環境ではコピーしやすいよう URL を単独行で出力
+    if (process.env.NODE_ENV !== "production") {
+      console.log("\n[magic-link] ✉ LOGIN URL:\n" + magicLink + "\n");
+    }
+
     const result = await sendEmail({
       to: email,
       subject: "【就活締切トラッカー】ログインリンク",

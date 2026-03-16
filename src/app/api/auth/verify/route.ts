@@ -13,7 +13,9 @@ import { createSessionToken, sessionCookieOptions } from "@/lib/auth/session";
 import { prisma } from "@/lib/prisma";
 
 export async function GET(req: NextRequest) {
-  const token = req.nextUrl.searchParams.get("token") ?? "";
+  // コピー時の末尾 \ 等の非hex文字を除去するサニタイズ
+  const rawToken = req.nextUrl.searchParams.get("token") ?? "";
+  const token = rawToken.replace(/[^0-9a-f]/gi, "");
 
   if (!token) {
     return NextResponse.redirect(new URL("/login?error=invalid", req.url));
@@ -21,7 +23,9 @@ export async function GET(req: NextRequest) {
 
   let email: string | null = null;
   try {
+    console.log("[verify] token received:", token.slice(0, 8) + "...");
     email = await consumeMagicLinkToken(token);
+    console.log("[verify] consumeMagicLinkToken result:", email);
   } catch (err) {
     console.error("[verify] consumeMagicLinkToken error:", err);
     return NextResponse.redirect(new URL("/login?error=server", req.url));
@@ -29,6 +33,7 @@ export async function GET(req: NextRequest) {
 
   if (!email) {
     // トークン無効（存在しない / 期限切れ / 使用済み）
+    console.log("[verify] email is null → redirect expired");
     return NextResponse.redirect(new URL("/login?error=expired", req.url));
   }
 
