@@ -57,9 +57,35 @@
 - [docs/GROWTH_PLAYBOOK.md](GROWTH_PLAYBOOK.md)
 - [docs/SEO_GTM_CHECKLIST.md](SEO_GTM_CHECKLIST.md)
 
-## 6. リリース手順（当日）
+## 6. QA / テスト（ローンチ前）
+
+> 詳細手順: [docs/QA_CRITICAL_PATH.md](QA_CRITICAL_PATH.md)
+
+### 自動テスト（ユニット）
+
+- [ ] `npm run test:auth` — JWT・トークン生成
+- [ ] `npm run test:stripe` — Stripe env バリデーション
+- [ ] `npm run test:webhook` — `resolveSubscriptionPlan` 全パターン
+- [ ] `npm run test:deadlines && npm run test:format` — バリデーション・フォーマット
+
+### スモークテスト（APIレベル）
+
+- [ ] `npm run test:smoke`（dev サーバー起動後）— 認証/課金/Cron の疎通確認
+
+### 手動確認（必須: A/B/C のみ）
+
+- [ ] **A. 認証**: Magic Link 送信 → verify → `/dashboard` 遷移
+- [ ] **B. データ保存**: 締切 CRUD・Free ユーザー 11件目で 403
+- [ ] **C. 課金**: テストカード決済 → DB に `plan=pro, status=active` が入る
+
+参考テンプレ:
+
+- [docs/QA_CRITICAL_PATH.md](QA_CRITICAL_PATH.md)
+
+## 7. リリース手順（当日）
 
 - [ ] バージョン/タグ（任意）を切る
 - [ ] 本番環境の環境変数を確認する
-- [ ] 本番でスモークテスト（主要導線）を実施する
+- [ ] `BASE_URL=https://your-app.vercel.app npm run test:smoke` で本番スモーク実施
+- [ ] 本番で Magic Link メールの到達確認（実メール）
 - [ ] ローンチ後24時間の監視担当（自分）を確保する

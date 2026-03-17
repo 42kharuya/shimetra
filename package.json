@@ -18,7 +18,8 @@
     "test:format": "npx tsx src/lib/deadlines/__tests__/format.test.ts",
     "test:stripe": "npx tsx src/lib/stripe/__tests__/stripe.test.ts",
     "test:webhook": "npx tsx src/lib/stripe/__tests__/webhook.test.ts",
-    "test:portal": "npx tsx src/lib/stripe/__tests__/portal.test.ts"
+    "test:portal": "npx tsx src/lib/stripe/__tests__/portal.test.ts",
+    "test:smoke": "bash scripts/smoke-test.sh"
   },
   "dependencies": {
     "@prisma/adapter-pg": "^7.5.0",
