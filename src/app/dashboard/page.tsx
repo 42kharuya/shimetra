@@ -19,8 +19,8 @@ export default async function DashboardPage() {
     redirect("/login");
   }
 
-  // 2. ダッシュボード表示の計測（重複は集計側で吸収する設計）
-  void trackEvent({ name: "dashboard_viewed", userId: session.sub });
+  // 2. ダッシュボード表示の計測（重複は集計側で吸収する設計・エラーはキャッチ済みなのでawait可）
+  await trackEvent({ name: "dashboard_viewed", userId: session.sub });
 
   // 3. ログインユーザーのアイテムを deadline_at 昇順で取得 & Pro 判定を並列実行
   const [rows, pro] = await Promise.all([
