@@ -4,6 +4,7 @@
 
 ## Unreleased
 
+- ops: `.env.example` に必須/任意を明記し、`docs/RUNBOOK.md`（Cron/Webhook シークレット運用・障害一次切り分け・ロールバック手順）を追加
 - feat: 計測基盤を追加（signup/activation/dashboard_viewed/purchase イベント、ANALYTICS_PROVIDER=console/segment 切替対応）
 - feat: `POST /api/cron/notify` を追加（CRON_SECRET 保護・締切前メール通知 Free=24h/Pro=72h/24h/3h・notification_deliveries の冪等 upsert で重複防止・成否で sent/failed 更新）
 - feat: `POST /api/stripe/portal` を追加（Stripe Customer Portal Session 作成・解約/支払い方法変更を委譲）、`/billing` にProユーザー向け「管理画面へ」ボタンを追加
