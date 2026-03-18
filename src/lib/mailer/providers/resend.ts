@@ -18,13 +18,20 @@ export async function sendViaResend(
 
   const client = new Resend(apiKey);
 
-  const { data, error } = await client.emails.send({
+  // Resend v6 の型はユニオン（react 必須 or html/text オプション）のため、
+  // undefined を含むプロパティを渡すと型エラーになる。
+  // 定義済みのプロパティだけスプレッドで組み立ててキャストする。
+  const sendData = {
     from,
     to: Array.isArray(payload.to) ? payload.to : [payload.to],
     subject: payload.subject,
-    html: payload.html,
-    text: payload.text,
-  });
+    ...(payload.html !== undefined ? { html: payload.html } : {}),
+    ...(payload.text !== undefined ? { text: payload.text } : {}),
+  };
+
+  const { data, error } = await client.emails.send(
+    sendData as Parameters<typeof client.emails.send>[0],
+  );
 
   if (error) {
     return { ok: false, error: error.message ?? "Resend API エラー" };
