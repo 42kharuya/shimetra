@@ -19,15 +19,17 @@
     "test:stripe": "npx tsx src/lib/stripe/__tests__/stripe.test.ts",
     "test:webhook": "npx tsx src/lib/stripe/__tests__/webhook.test.ts",
     "test:portal": "npx tsx src/lib/stripe/__tests__/portal.test.ts",
-    "test:smoke": "bash scripts/smoke-test.sh"
+    "test:smoke": "bash scripts/smoke-test.sh",
+    "build:cloudflare": "opennextjs-cloudflare build",
+    "preview": "wrangler dev",
+    "deploy": "wrangler deploy"
   },
   "dependencies": {
-    "@prisma/adapter-pg": "^7.5.0",
     "@prisma/client": "^7.5.0",
+    "@prisma/extension-accelerate": "^3.0.1",
     "dotenv": "^17.3.1",
     "jose": "^6.2.1",
-    "next": "16.1.6",
-    "pg": "^8.20.0",
+    "next": "15.5.13",
     "prisma": "^7.5.0",
     "react": "19.0.0",
     "react-dom": "19.0.0",
@@ -35,15 +37,16 @@
     "stripe": "^20.4.1"
   },
   "devDependencies": {
+    "@opennextjs/cloudflare": "^1.17.1",
     "@types/node": "20.11.30",
-    "@types/pg": "^8.18.0",
     "@types/react": "19.0.12",
     "@types/react-dom": "19.0.4",
     "autoprefixer": "10.4.19",
     "eslint": "9.22.0",
-    "eslint-config-next": "16.1.6",
+    "eslint-config-next": "15.5.13",
     "postcss": "8.4.38",
     "tailwindcss": "3.4.3",
-    "typescript": "5.4.5"
+    "typescript": "5.4.5",
+    "wrangler": "^4.75.0"
   }
 }

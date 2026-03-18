@@ -7,7 +7,9 @@ export default defineConfig({
     path: "prisma/migrations",
   },
   datasource: {
-    // DATABASE_URL が未設定でも prisma generate は通るように process.env 経由で参照
-    url: process.env.DATABASE_URL ?? "",
+    // CLI（prisma migrate / prisma db push / prisma studio）用
+    // Cloudflare Workers Edge Runtime では使用しない（TCP 接続不可）
+    // 本番: Neon（postgresql://...）、ローカル: docker-compose の Postgres URL
+    url: process.env.DIRECT_URL ?? process.env.DATABASE_URL ?? "",
   },
 });

@@ -16,6 +16,7 @@
  */
 
 import { prisma } from "@/lib/prisma";
+import type { Prisma } from "@prisma/client";
 import { sendEmail } from "@/lib/mailer";
 import { isProUser } from "@/lib/deadlines/gate";
 
@@ -110,7 +111,8 @@ export async function findAndDeliverNotifications(): Promise<NotifyResult> {
   const deadlineFrom = new Date(now.getTime() - windowMs);
   const deadlineTo = new Date(now.getTime() + maxOffsetMs + windowMs);
 
-  const items = await prisma.deadlineItem.findMany({
+  // withAccelerate() 拡張型で include の型推論が崩れるため明示的に型付け
+  const items = (await prisma.deadlineItem.findMany({
     where: {
       deadlineAt: { gte: deadlineFrom, lte: deadlineTo },
       // done/canceled は通知不要
@@ -119,7 +121,7 @@ export async function findAndDeliverNotifications(): Promise<NotifyResult> {
     include: {
       user: true,
     },
-  });
+  })) as Prisma.DeadlineItemGetPayload<{ include: { user: true } }>[];
 
   const result: NotifyResult = {
     processed: 0,

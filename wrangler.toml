@@ -1,0 +1,17 @@
+# Cloudflare Workers 設定
+# @opennextjs/cloudflare が生成した .open-next/worker.js を Deploy する
+# see: https://opennext.js.org/cloudflare
+
+name = "job-hunt-deadline-tracker"
+main = ".open-next/worker.js"
+compatibility_date = "2024-09-23"
+compatibility_flags = ["nodejs_compat"]
+
+[assets]
+directory = ".open-next/assets"
+binding = "ASSETS"
+
+# Cron トリガー: 10分ごとに /api/cron/notify を呼び出す
+# 本番環境は Cloudflare Dashboard の Triggers タブでも管理可能
+[triggers]
+crons = ["*/10 * * * *"]
