@@ -131,13 +131,12 @@ async function runAll() {
   await test(
     "NODE_ENV=test: console.log を呼ばずに resolve する",
     async () => {
-      const origNodeEnv = process.env["NODE_ENV"];
-      // NODE_ENV は read-only なので defineProperty でオーバーライド
-      Object.defineProperty(process.env, "NODE_ENV", {
-        value: "test",
-        configurable: true,
-        writable: true,
-      });
+      const env = process.env as Record<string, string | undefined>;
+      const origNodeEnv = env["NODE_ENV"];
+      // TypeScript の型定義では NODE_ENV は readonly だが、
+      // Node.js ランタイムでは process.env への直接代入が可能。
+      // Record<string, string | undefined> にキャストして上書きする。
+      env["NODE_ENV"] = "test";
       process.env.ANALYTICS_PROVIDER = "console";
       const logs: unknown[] = [];
       const orig = console.log;
@@ -150,11 +149,7 @@ async function runAll() {
         assert.ok(!found, "NODE_ENV=test なのに [analytics] ログが出力された");
       } finally {
         console.log = orig;
-        Object.defineProperty(process.env, "NODE_ENV", {
-          value: origNodeEnv,
-          configurable: true,
-          writable: true,
-        });
+        env["NODE_ENV"] = origNodeEnv;
       }
     },
   );
