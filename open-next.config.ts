@@ -1,19 +1,30 @@
-import type { OpenNextConfig } from "@opennextjs/cloudflare";
+import { defineCloudflareConfig } from "@opennextjs/cloudflare";
 
-// @opennextjs/cloudflare の設定ファイル
-// ビルド時: npx opennextjs-cloudflare build
-// ローカル開発: npx wrangler dev
-// デプロイ: npx wrangler deploy
+// @opennextjs/cloudflare v1 の設定ファイル
+// ビルド時: npm run build:cloudflare (opennextjs-cloudflare build)
+// ローカル開発: npm run preview (opennextjs-cloudflare build && opennextjs-cloudflare preview)
+// デプロイ: npm run deploy (opennextjs-cloudflare build && opennextjs-cloudflare deploy)
 // see: https://opennext.js.org/cloudflare/get-started
-const config: OpenNextConfig = {
+export default defineCloudflareConfig({
   default: {
     override: {
       wrapper: "cloudflare-node",
       converter: "edge",
-      // Cron ハンドラー: wrangler.toml の [triggers] cron から呼ばれる
-      // → /api/cron/notify Route Handler に転送される
+      proxyExternalRequest: "fetch",
+      incrementalCache: "dummy",
+      tagCache: "dummy",
+      queue: "dummy",
     },
   },
-};
-
-export default config;
+  middleware: {
+    external: true,
+    override: {
+      wrapper: "cloudflare-edge",
+      converter: "edge",
+      proxyExternalRequest: "fetch",
+      incrementalCache: "dummy",
+      tagCache: "dummy",
+      queue: "dummy",
+    },
+  },
+});
