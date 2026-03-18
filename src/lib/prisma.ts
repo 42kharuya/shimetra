@@ -10,7 +10,7 @@ import { withAccelerate } from "@prisma/extension-accelerate";
 
 // globalThis を使用（global は Edge Runtime で非推奨）
 const globalForPrisma = globalThis as unknown as {
-  prisma: ReturnType<typeof createPrismaClient>;
+  prisma: ReturnType<typeof createPrismaClient> | undefined;
 };
 
 function createPrismaClient() {
@@ -19,8 +19,18 @@ function createPrismaClient() {
   return new PrismaClient().$extends(withAccelerate());
 }
 
-export const prisma = globalForPrisma.prisma ?? createPrismaClient();
-
-if (process.env.NODE_ENV !== "production") {
-  globalForPrisma.prisma = prisma;
+function getPrismaClient(): ReturnType<typeof createPrismaClient> {
+  if (!globalForPrisma.prisma) {
+    globalForPrisma.prisma = createPrismaClient();
+  }
+  return globalForPrisma.prisma;
 }
+
+// Lazy Proxy: モジュールインポート時に PrismaClient を初期化しない。
+// 初回プロパティアクセス時（実リクエスト時）に初期化することで、
+// Next.js ビルド時に DATABASE_URL が未設定でもクラッシュしない。
+export const prisma = new Proxy({} as ReturnType<typeof createPrismaClient>, {
+  get(_target, prop: string | symbol) {
+    return (getPrismaClient() as unknown as Record<string | symbol, unknown>)[prop];
+  },
+});
