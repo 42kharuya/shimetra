@@ -1,15 +1,13 @@
 # Development Guide
 
-派生リポジトリの技術スタック（例: Next.js, React, Node, Python 等）に合わせて更新してください。
+スタック: Next.js (App Router) + TypeScript + Tailwind CSS + Prisma + PostgreSQL
 
-まずは [docs/00_START_HERE.md](00_START_HERE.md) の順に進めると迷いにくいです。
-
-## 開発フロー（推奨）
+## 開発フロー
 
 - PRD→設計→Issue化の順で決める
-  - PRD: [docs/PRD_TEMPLATE.md](PRD_TEMPLATE.md)
+  - PRD: [docs/PRD.md](PRD.md)
   - 設計メモ: [docs/architecture.md](architecture.md)
-  - Issue分割: [docs/MVP_BACKLOG_TEMPLATE.md](MVP_BACKLOG_TEMPLATE.md)
+  - Issue一覧: [docs/MVP_BACKLOG.md](MVP_BACKLOG.md)
 - Issue に「背景」「目的」「非目的」「受け入れ条件（AC）」を書く
 - 1 Issue = 1 PR で小さく進める（半日以内の粒度）
 
@@ -33,7 +31,7 @@
 - ローカル用: `.env`（コミットしない）
 - 秘密情報は README やドキュメントに貼らない
 
-## 受け入れ条件（テンプレ）
+## 受け入れ条件（PR記述の型）
 
 - [ ] 期待する動作が説明されている
 - [ ] エッジケースが列挙されている
