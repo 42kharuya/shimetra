@@ -6,6 +6,8 @@
  * - バリデーション失敗時のみ 400 を返す
  */
 
+export const dynamic = "force-dynamic";
+
 import { NextRequest, NextResponse } from "next/server";
 import { createMagicLinkToken } from "@/lib/auth/token";
 import { sendEmail } from "@/lib/mailer";

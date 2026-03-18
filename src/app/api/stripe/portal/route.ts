@@ -25,6 +25,8 @@
  *  - { error: string }          500  サーバーエラー
  */
 
+export const dynamic = "force-dynamic";
+
 import { NextRequest, NextResponse } from "next/server";
 import { getSession } from "@/lib/auth/session";
 import { getStripe } from "@/lib/stripe";

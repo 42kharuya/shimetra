@@ -26,6 +26,8 @@
  *  ※ schedule: 10分間隔（"星印/10 * * * *"形式、JSDoc上の都合でスペース挿入済み）
  */
 
+export const dynamic = "force-dynamic";
+
 import { NextRequest, NextResponse } from "next/server";
 import { findAndDeliverNotifications } from "@/lib/notifications/notify";
 

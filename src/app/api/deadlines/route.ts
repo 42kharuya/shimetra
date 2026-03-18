@@ -34,6 +34,8 @@
  *  - それ以外（Free）は 10 件まで。超過時は 403 を返す
  */
 
+export const dynamic = "force-dynamic";
+
 import { NextRequest, NextResponse } from "next/server";
 import { getSession } from "@/lib/auth/session";
 import { prisma } from "@/lib/prisma";

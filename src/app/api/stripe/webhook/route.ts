@@ -28,6 +28,8 @@
  *  - { error: string }    500  サーバーエラー
  */
 
+export const dynamic = "force-dynamic";
+
 import { NextRequest, NextResponse } from "next/server";
 import { getStripe } from "@/lib/stripe";
 import { upsertSubscription } from "@/lib/stripe/webhook";

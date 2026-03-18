@@ -8,6 +8,8 @@
  *   「メール確認（マジックリンクのクリック）完了 = ユーザー作成確定」
  */
 
+export const dynamic = "force-dynamic";
+
 import { NextRequest, NextResponse } from "next/server";
 import { consumeMagicLinkToken } from "@/lib/auth/token";
 import { createSessionToken, sessionCookieOptions } from "@/lib/auth/session";

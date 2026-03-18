@@ -26,6 +26,8 @@
  *  - 対象アイテムの所有者のみ削除可（他ユーザーは 403）
  */
 
+export const dynamic = "force-dynamic";
+
 import { NextRequest, NextResponse } from "next/server";
 import { getSession } from "@/lib/auth/session";
 import { prisma } from "@/lib/prisma";
