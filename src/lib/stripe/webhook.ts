@@ -69,8 +69,11 @@ export async function upsertSubscription(
 
   const plan = resolveSubscriptionPlan(subscription.status, currentPeriodEnd);
 
+  // upsert キーを userId (@unique) にする。
+  // stripeSubscriptionId をキーにすると、再契約時（旧サブスク解約 → 新サブスク作成）に
+  // 新しい ID で CREATE しようとして user_id の UNIQUE 制約違反になるため。
   await prisma.subscription.upsert({
-    where: { stripeSubscriptionId: subscription.id },
+    where: { userId },
     create: {
       userId,
       stripeCustomerId,
@@ -81,6 +84,7 @@ export async function upsertSubscription(
     },
     update: {
       stripeCustomerId,
+      stripeSubscriptionId: subscription.id,
       status: subscription.status,
       plan,
       currentPeriodEnd,
