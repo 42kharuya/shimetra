@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -11,7 +12,25 @@ export default function RootLayout({
 }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="ja">
-      <body>{children}</body>
+      <body className="flex min-h-screen flex-col">
+        <div className="flex-1">{children}</div>
+        <footer className="border-t border-slate-200 bg-slate-50 py-4 text-center text-xs text-slate-500">
+          <nav className="space-x-4">
+            <Link href="/terms" className="hover:underline">
+              利用規約
+            </Link>
+            <Link href="/privacy" className="hover:underline">
+              プライバシーポリシー
+            </Link>
+            <a
+              href="mailto:support@example.com"
+              className="hover:underline"
+            >
+              お問い合わせ
+            </a>
+          </nav>
+        </footer>
+      </body>
     </html>
   );
 }
