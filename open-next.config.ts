@@ -6,6 +6,7 @@ import { defineCloudflareConfig } from "@opennextjs/cloudflare";
 // デプロイ: npm run deploy (opennextjs-cloudflare build && opennextjs-cloudflare deploy)
 // see: https://opennext.js.org/cloudflare/get-started
 export default defineCloudflareConfig({
+  edgeExternals: ["node:crypto"],
   default: {
     override: {
       wrapper: "cloudflare-node",
