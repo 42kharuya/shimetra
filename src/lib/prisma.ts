@@ -19,8 +19,7 @@ function createPrismaClient() {
     throw new Error("DATABASE_URL is not set");
   }
   // Cloudflare Workers には WebSocket がグローバルに存在する
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  neonConfig.webSocketConstructor = (globalThis as any).WebSocket;
+  neonConfig.webSocketConstructor = WebSocket;
   const adapter = new PrismaNeon({ connectionString });
   return new PrismaClient({ adapter });
 }
