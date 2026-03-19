@@ -14,9 +14,13 @@ const globalForPrisma = globalThis as unknown as {
 };
 
 function createPrismaClient() {
-  // withAccelerate() は DATABASE_URL（prisma://...）を自動読み取る
-  // なお Prisma v7 では datasources オプションは廃止されたため不使用
-  return new PrismaClient().$extends(withAccelerate());
+  // Cloudflare Workers では process.env の自動読み取りが動作しないケースがあるため
+  // datasourceUrl を明示的に渡す（withAccelerate が prisma:// URL を読み取って HTTP 接続）
+  const url = process.env.DATABASE_URL;
+  if (!url) {
+    throw new Error("DATABASE_URL is not set");
+  }
+  return new PrismaClient({ datasourceUrl: url }).$extends(withAccelerate());
 }
 
 function getPrismaClient(): ReturnType<typeof createPrismaClient> {
