@@ -17,7 +17,7 @@
 #   3. npm run deploy              (wrangler deploy)
 # -------------------------------------------------------------------
 
-name = "job-hunt-deadline-tracker"
+name = "job-hunt-tracker"
 main = ".open-next/worker.js"
 compatibility_date = "2025-09-23"
 compatibility_flags = ["nodejs_compat"]
