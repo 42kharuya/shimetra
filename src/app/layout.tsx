@@ -22,8 +22,11 @@ export default function RootLayout({
             <Link href="/privacy" className="hover:underline">
               プライバシーポリシー
             </Link>
+            <Link href="/legal" className="hover:underline">
+              特定商取引法に基づく表記
+            </Link>
             <a
-              href="mailto:support@example.com"
+              href="mailto:haruya.0411.k@gmail.com"
               className="hover:underline"
             >
               お問い合わせ
