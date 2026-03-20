@@ -10,6 +10,8 @@
  *  ANALYTICS_WRITE_KEY: Segment Write Key（ANALYTICS_PROVIDER=segment のとき必須）
  */
 
+import { env } from "@/lib/env";
+
 // ---------------------------------------------------------------
 // イベント型定義（ANALYTICS_SPEC.md に対応）
 // ---------------------------------------------------------------
@@ -70,9 +72,9 @@ export async function trackEvent(event: AnalyticsEvent): Promise<void> {
 // ---------------------------------------------------------------
 
 async function doTrack(event: AnalyticsEvent): Promise<void> {
-  const provider = process.env.ANALYTICS_PROVIDER ?? "console";
+  const provider = env.ANALYTICS_PROVIDER;
 
-  if (process.env.NODE_ENV === "test") {
+  if (env.NODE_ENV === "test") {
     // テスト時は出力しない（spy で検証できるよう素通り）
     return;
   }
@@ -83,7 +85,7 @@ async function doTrack(event: AnalyticsEvent): Promise<void> {
   }
 
   if (provider === "segment") {
-    const writeKey = process.env.ANALYTICS_WRITE_KEY;
+    const writeKey = env.ANALYTICS_WRITE_KEY;
     if (!writeKey) {
       console.warn(
         "[analytics] ANALYTICS_WRITE_KEY is not set. Skipping Segment track.",

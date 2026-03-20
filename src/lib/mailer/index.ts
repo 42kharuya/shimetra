@@ -13,6 +13,7 @@
 import { sendViaConsole } from "./providers/console";
 import { sendViaResend } from "./providers/resend";
 import type { EmailPayload, SendEmailResult } from "./types";
+import { env } from "@/lib/env";
 
 export type { EmailPayload, SendEmailResult };
 
@@ -24,7 +25,7 @@ export type { EmailPayload, SendEmailResult };
 export async function sendEmail(
   payload: EmailPayload
 ): Promise<SendEmailResult> {
-  const provider = process.env.EMAIL_PROVIDER ?? "console";
+  const provider = env.EMAIL_PROVIDER;
 
   try {
     switch (provider) {
