@@ -8,16 +8,17 @@
  */
 import { randomBytes } from "node:crypto";
 import { prisma } from "@/lib/prisma";
+import { env } from "@/lib/env";
 
 /** consumeMagicLinkToken の戻り値 */
 export type ConsumeTokenResult =
   | { ok: true; email: string }
   | { ok: false; reason: "expired" | "invalid" };
 
-const EXPIRY_MINUTES = parseInt(
-  process.env.MAGIC_LINK_EXPIRY_MINUTES ?? "30",
-  10,
-);
+// MAGIC_LINK_EXPIRY_MINUTES は env 経由で取得（デフォルト: 30）
+function getExpiryMinutes(): number {
+  return env.MAGIC_LINK_EXPIRY_MINUTES;
+}
 
 /** 暗号学的にランダムなトークン文字列を生成 */
 export function generateToken(): string {
@@ -38,7 +39,7 @@ export async function createMagicLinkToken(email: string): Promise<string> {
   });
 
   const token = generateToken();
-  const expiresAt = new Date(Date.now() + EXPIRY_MINUTES * 60 * 1000);
+  const expiresAt = new Date(Date.now() + getExpiryMinutes() * 60 * 1000);
 
   await prisma.magicLinkToken.create({
     data: { email, token, expiresAt },

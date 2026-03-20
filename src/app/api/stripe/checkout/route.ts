@@ -24,6 +24,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { getSession } from "@/lib/auth/session";
 import { getStripe } from "@/lib/stripe";
 import { prisma } from "@/lib/prisma";
+import { env } from "@/lib/env";
 
 /** GET は許可しない（ブラウザで直接開いた場合に分かりやすいエラーを返す） */
 export function GET() {
@@ -31,14 +32,6 @@ export function GET() {
     { error: "このエンドポイントは POST のみ受け付けます。/billing からアップグレードしてください。" },
     { status: 405 },
   );
-}
-
-function getRequiredEnv(key: string): string {
-  const value = process.env[key];
-  if (!value) {
-    throw new Error(`${key} is not set. Add it to .env`);
-  }
-  return value;
 }
 
 export async function POST(req: NextRequest) {
@@ -54,9 +47,9 @@ export async function POST(req: NextRequest) {
     const userId = session.sub;
     const email = session.email;
 
-    // 2. 環境変数チェック
-    const priceId = getRequiredEnv("STRIPE_PRICE_ID");
-    const appUrl = getRequiredEnv("APP_URL");
+    // 2. 環境変数取得
+    const priceId = env.STRIPE_PRICE_ID;
+    const appUrl = env.APP_URL;
 
     // 3. 既存の stripe_customer_id を取得（あれば再利用）
     const existingSub = await prisma.subscription.findUnique({

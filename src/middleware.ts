@@ -12,6 +12,11 @@
  */
 import { NextRequest, NextResponse } from "next/server";
 import { getSession } from "@/lib/auth/session";
+import { validateAllEnv } from "@/lib/env";
+
+// CF Workers / Edge Runtime のモジュール初期化時に全必須変数を一括検証する。
+// 欠損がある場合は最初のリクエスト到達時に明確なエラーで起動を停止する。
+validateAllEnv();
 
 const PROTECTED_PREFIXES = ["/dashboard", "/deadline", "/billing"];
 

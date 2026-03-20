@@ -19,6 +19,7 @@ import { prisma } from "@/lib/prisma";
 import type { Prisma } from "@prisma/client";
 import { sendEmail } from "@/lib/mailer";
 import { isProUser } from "@/lib/deadlines/gate";
+import { env } from "@/lib/env";
 
 /** Free プランの通知オフセット（分） */
 export const OFFSETS_FREE: number[] = [1440]; // 24h
@@ -103,7 +104,7 @@ export async function findAndDeliverNotifications(): Promise<NotifyResult> {
   const now = new Date();
   const windowMs = CRON_WINDOW_MINUTES * 60 * 1000;
   const maxOffsetMs = Math.max(...OFFSETS_PRO) * 60 * 1000;
-  const appUrl = process.env.APP_URL ?? "http://localhost:3000";
+  const appUrl = env.APP_URL;
 
   // ウィンドウ内に scheduled_for (= deadline_at - offset) が入り得る
   // deadline_at の範囲: now - WINDOW + minOffset <= deadline_at <= now + WINDOW + maxOffset

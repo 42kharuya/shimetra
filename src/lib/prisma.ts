@@ -7,6 +7,7 @@
 import { PrismaClient } from "@prisma/client/edge";
 import { PrismaNeon } from "@prisma/adapter-neon";
 import { neonConfig } from "@neondatabase/serverless";
+import { env } from "@/lib/env";
 
 // globalThis を使用（global は Edge Runtime で非推奨）
 const globalForPrisma = globalThis as unknown as {
@@ -14,10 +15,7 @@ const globalForPrisma = globalThis as unknown as {
 };
 
 function createPrismaClient() {
-  const connectionString = process.env.DATABASE_URL;
-  if (!connectionString) {
-    throw new Error("DATABASE_URL is not set");
-  }
+  const connectionString = env.DATABASE_URL;
   // Cloudflare Workers には WebSocket がグローバルに存在する
   neonConfig.webSocketConstructor = WebSocket;
   const adapter = new PrismaNeon({ connectionString });

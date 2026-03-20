@@ -11,6 +11,7 @@
     "db:migrate": "prisma migrate dev",
     "db:migrate:deploy": "prisma migrate deploy",
     "db:studio": "prisma studio",
+    "test:env": "npx tsx src/lib/__tests__/env.test.ts",
     "test:analytics": "npx tsx src/lib/analytics/__tests__/analytics.test.ts",
     "test:mailer": "npx tsx src/lib/mailer/__tests__/sendEmail.test.ts",
     "test:auth": "npx tsx src/lib/auth/__tests__/auth.test.ts",
@@ -39,7 +40,8 @@
     "react": "19.0.0",
     "react-dom": "19.0.0",
     "resend": "^6.9.3",
-    "stripe": "^20.4.1"
+    "stripe": "^20.4.1",
+    "zod": "^4.3.6"
   },
   "devDependencies": {
     "@opennextjs/cloudflare": "^1.17.1",

@@ -31,14 +31,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { getSession } from "@/lib/auth/session";
 import { getStripe } from "@/lib/stripe";
 import { prisma } from "@/lib/prisma";
-
-function getRequiredEnv(key: string): string {
-  const value = process.env[key];
-  if (!value) {
-    throw new Error(`${key} is not set. Add it to .env`);
-  }
-  return value;
-}
+import { env } from "@/lib/env";
 
 /** GET は許可しない */
 export function GET() {
@@ -60,8 +53,8 @@ export async function POST(req: NextRequest) {
     }
     const userId = session.sub;
 
-    // 2. APP_URL チェック
-    const appUrl = getRequiredEnv("APP_URL");
+    // 2. APP_URL 取得
+    const appUrl = env.APP_URL;
 
     // 3. stripe_customer_id を取得
     const subscription = await prisma.subscription.findUnique({

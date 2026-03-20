@@ -31,6 +31,7 @@ export const dynamic = "force-dynamic";
 
 import { NextRequest, NextResponse } from "next/server";
 import { findAndDeliverNotifications } from "@/lib/notifications/notify";
+import { env } from "@/lib/env";
 
 /** GET は許可しない */
 export function GET() {
@@ -42,8 +43,10 @@ export function GET() {
 
 export async function POST(req: NextRequest) {
   // 1. CRON_SECRET 認証
-  const cronSecret = process.env.CRON_SECRET;
-  if (!cronSecret) {
+  let cronSecret: string;
+  try {
+    cronSecret = env.CRON_SECRET;
+  } catch {
     console.error("[cron/notify] CRON_SECRET が設定されていません");
     return NextResponse.json(
       { error: "サーバー設定エラー: CRON_SECRET が未設定です" },

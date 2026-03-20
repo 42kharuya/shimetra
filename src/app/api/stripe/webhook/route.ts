@@ -34,15 +34,8 @@ import { NextRequest, NextResponse } from "next/server";
 import { getStripe } from "@/lib/stripe";
 import { upsertSubscription } from "@/lib/stripe/webhook";
 import { trackEvent } from "@/lib/analytics";
+import { env } from "@/lib/env";
 import type Stripe from "stripe";
-
-function getWebhookSecret(): string {
-  const secret = process.env.STRIPE_WEBHOOK_SECRET;
-  if (!secret) {
-    throw new Error("STRIPE_WEBHOOK_SECRET is not set. Add it to .env");
-  }
-  return secret;
-}
 
 /** GET は許可しない */
 export function GET() {
@@ -67,8 +60,7 @@ export async function POST(req: NextRequest) {
   // 2. 署名検証
   let event: Stripe.Event;
   try {
-    const webhookSecret = getWebhookSecret();
-    event = getStripe().webhooks.constructEvent(body, signature, webhookSecret);
+    event = getStripe().webhooks.constructEvent(body, signature, env.STRIPE_WEBHOOK_SECRET);
   } catch (err) {
     const message = err instanceof Error ? err.message : "Unknown error";
     console.error("[webhook] 署名検証失敗: %s", message);

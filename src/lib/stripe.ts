@@ -6,13 +6,10 @@
  * - getStripe() を呼び出すまで初期化されない（遅延初期化）
  */
 import Stripe from "stripe";
+import { env } from "@/lib/env";
 
 function getStripeClient(): Stripe {
-  const secretKey = process.env.STRIPE_SECRET_KEY;
-  if (!secretKey) {
-    throw new Error("STRIPE_SECRET_KEY is not set. Add it to .env");
-  }
-  return new Stripe(secretKey);
+  return new Stripe(env.STRIPE_SECRET_KEY);
 }
 
 // 遅延初期化シングルトン（モジュール読み込み時には初期化しない）

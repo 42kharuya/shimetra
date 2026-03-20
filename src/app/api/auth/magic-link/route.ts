@@ -11,6 +11,7 @@ export const dynamic = "force-dynamic";
 import { NextRequest, NextResponse } from "next/server";
 import { createMagicLinkToken } from "@/lib/auth/token";
 import { sendEmail } from "@/lib/mailer";
+import { env } from "@/lib/env";
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -30,12 +31,12 @@ export async function POST(req: NextRequest) {
     }
 
     const token = await createMagicLinkToken(email);
-    const appUrl = process.env.APP_URL ?? "http://localhost:3000";
+    const appUrl = env.APP_URL;
     const magicLink = `${appUrl}/api/auth/verify?token=${token}`;
-    const expiryMin = process.env.MAGIC_LINK_EXPIRY_MINUTES ?? "30";
+    const expiryMin = env.MAGIC_LINK_EXPIRY_MINUTES;
 
     // dev 環境ではコピーしやすいよう URL を単独行で出力
-    if (process.env.NODE_ENV !== "production") {
+    if (env.NODE_ENV !== "production") {
       console.log("\n[magic-link] ✉ LOGIN URL:\n" + magicLink + "\n");
     }
 

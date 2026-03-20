@@ -9,6 +9,7 @@
 import { SignJWT, jwtVerify } from "jose";
 import { type NextRequest } from "next/server";
 import { cookies } from "next/headers";
+import { env } from "@/lib/env";
 
 export const SESSION_COOKIE = "__session";
 const SESSION_DURATION_DAYS = 30;
@@ -19,11 +20,7 @@ export interface SessionPayload {
 }
 
 function getSecret(): Uint8Array {
-  const secret = process.env.AUTH_SECRET;
-  if (!secret) {
-    throw new Error("AUTH_SECRET is not set. Add it to .env");
-  }
-  return new TextEncoder().encode(secret);
+  return new TextEncoder().encode(env.AUTH_SECRET);
 }
 
 /** JWT セッショントークンを作成する */
@@ -81,7 +78,7 @@ export function sessionCookieOptions(token: string) {
     name: SESSION_COOKIE,
     value: token,
     httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
+    secure: env.NODE_ENV === "production",
     sameSite: "lax" as const,
     path: "/",
     maxAge: 60 * 60 * 24 * SESSION_DURATION_DAYS,
