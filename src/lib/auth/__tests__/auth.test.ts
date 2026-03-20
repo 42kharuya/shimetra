@@ -5,10 +5,23 @@
  *  - session.ts: JWT の生成→検証が往復できるか（DB 不要）
  *  - token.ts: generateToken が 64 文字 hex を返すか（DB 不要）
  *  - consumeMagicLinkToken: prisma をモック差し替えして reason 区別を検証
+ *
+ * なぜ vi.mock を使うか:
+ *  prisma.ts は neonConfig.webSocketConstructor = WebSocket を呼ぶが、
+ *  Node 20（CI 環境）には WebSocket グローバルが存在しない。
+ *  vi.mock でモジュールごと差し替えることで実クライアントを初期化させない。
  */
 
-// Prisma クライアント初期化前に DATABASE_URL を読み込む
-import "dotenv/config";
+// vi.mock は Vitest のトランスフォーマーによりファイル先頭に巻き上げられる。
+// そのため実際の @/lib/prisma モジュールは一切評価されない。
+vi.mock("@/lib/prisma", () => ({
+  prisma: {
+    magicLinkToken: {
+      findUnique: async () => null,
+      update: async () => null,
+    },
+  },
+}));
 
 import assert from "node:assert/strict";
 import { createSessionToken, verifySessionToken } from "../session";
