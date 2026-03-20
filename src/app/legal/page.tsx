@@ -15,10 +15,10 @@ const ITEMS: { label: string; value: React.ReactNode }[] = [
     label: "連絡先",
     value: (
       <a
-        href="mailto:haruya.0411.k@gmail.com"
+        href="mailto:support@shimetra.com"
         className="text-blue-600 hover:underline"
       >
-        haruya.0411.k@gmail.com
+        support@shimetra.com
       </a>
     ),
   },

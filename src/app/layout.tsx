@@ -26,7 +26,7 @@ export default function RootLayout({
               特定商取引法に基づく表記
             </Link>
             <a
-              href="mailto:haruya.0411.k@gmail.com"
+              href="mailto:support@shimetra.com"
               className="hover:underline"
             >
               お問い合わせ
