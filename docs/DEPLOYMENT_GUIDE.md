@@ -1,37 +1,62 @@
-# Deployment Guide（テンプレ）
+# Deployment Guide（〆トラ）
 
-目的: 初学者でも「ローカル→本番」を迷わずつなげる。
+目的: ローカルから本番（Cloudflare Workers）まで迷わずつなげる。
 
-## 1) 最低限の環境
+## 1) 環境構成
 
-- local: ローカル開発
-- prod: 本番
-
-余裕があれば:
-
-- staging: 本番同等（リリース前確認用）
+| 環境       | 用途                                                     |
+| ---------- | -------------------------------------------------------- |
+| local      | ローカル開発（`npm run dev`　または　`npm run preview`） |
+| production | 本番（Cloudflare Workers）                               |
 
 ## 2) 環境変数
 
 - 雛形: [.env.example](../.env.example)
 - ルール:
-  - `.env` はコミットしない（[.gitignore](../.gitignore)）
-  - 本番はホスティング側の管理画面等に設定する
-  - 「何が必須か」をREADMEに書く（派生リポジトリ側）
+  - `.env` はコミットしない（`.gitignore`）
+  - 本番シークレットは `wrangler secret put <VAR_NAME>` で設定する
+  - 非シークレット変数は `wrangler.toml` の `[vars]` に記載する
+  - 「何が必須か」は `.env.example` に全量記載する
 
-## 3) デプロイ手順（テンプレ）
+## 3) デプロイ手順
 
-1. `main` にマージ（PRでレビュー/確認）
-2. 本番デプロイが走る（手動/自動は派生先で決める）
-3. 本番スモークテスト（[docs/LAUNCH_CHECKLIST.md](LAUNCH_CHECKLIST.md)）
-4. 問題があればロールバック（[docs/RUNBOOK_TEMPLATE.md](RUNBOOK_TEMPLATE.md)）
+```bash
+# 1. 依存関係インストール
+npm install
 
-## 4) ロールバック方針（先に決める）
+# 2. 本番シークレット登録（初回のみ / 変更時）
+wrangler secret put DATABASE_URL
+wrangler secret put AUTH_SECRET
+wrangler secret put RESEND_API_KEY
+wrangler secret put STRIPE_SECRET_KEY
+wrangler secret put STRIPE_WEBHOOK_SECRET
+wrangler secret put CRON_SECRET
 
-- 直前バージョンへ戻す手段:
-- DB変更がある場合の戻し方:
-  - 破壊的変更は避け、必要なら段階リリースにする
+# 3. DB マイグレーション（Neon 本番に対して実行）
+npx prisma migrate deploy
 
-## 5) リリースノート
+# 4. デプロイ
+npm run deploy
+```
 
-- 変更履歴は [CHANGELOG.md](../CHANGELOG.md) を更新する（最小でOK）
+`npm run deploy` の実体は `wrangler deploy`（`open-next.config.ts` 経由で Next.js を Cloudflare Workers 向けにビルド）。
+
+## 4) Cron の設定
+
+Cron スケジュールは `wrangler.toml` の `[triggers] crons` で管理する。
+デプロイ後に Cloudflare Dashboard > Workers & Pages > [project] > Triggers > Cron Triggers でスケジュールを確認する。
+
+```toml
+# wrangler.toml（example）
+[triggers]
+crons = ["*/10 * * * *"]   # 10分おき
+```
+
+## 5) ロールバック方針
+
+- コード: `git revert <commit> && git push origin main && npm run deploy`
+- DB 変更がある場合: 追加カラムのみの場合はロールバック不要。破壊的変更は段階リリースにする。
+
+## 6) リリースノート
+
+変更履歴は [CHANGELOG.md](../CHANGELOG.md) を更新する（PR マージのたびに `Unreleased` に1行追記）。
