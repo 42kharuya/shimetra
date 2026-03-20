@@ -11,6 +11,37 @@
 - デプロイ: **Cloudflare Workers**（`npm run deploy`）
 - 課金: Stripe（Pro 980円/月）
 
+## デプロイ手順（Cloudflare Workers）
+
+本番デプロイは **Cloudflare Workers のみ** を使用しています（Vercel は使用しません）。
+
+### 初回セットアップ：シークレット登録
+
+機密情報は `wrangler.toml` に書かず、`wrangler secret put` を使って登録してください。
+
+```bash
+wrangler secret put DATABASE_URL
+wrangler secret put AUTH_SECRET
+wrangler secret put APP_URL
+wrangler secret put RESEND_API_KEY
+wrangler secret put EMAIL_FROM
+wrangler secret put STRIPE_SECRET_KEY
+wrangler secret put STRIPE_PRICE_ID
+wrangler secret put STRIPE_WEBHOOK_SECRET
+wrangler secret put CRON_SECRET
+```
+
+> 各シークレットの詳細は `.env.example` を参照してください。
+
+### デプロイコマンド
+
+```bash
+npm run build:cloudflare   # opennextjs-cloudflare build
+npm run deploy             # wrangler deploy
+```
+
+詳細な手順・環境変数の説明は [docs/DEPLOYMENT_GUIDE.md](docs/DEPLOYMENT_GUIDE.md) を参照してください。
+
 ## ドキュメント
 
 - プロダクト仕様: [docs/PRD.md](docs/PRD.md)
@@ -45,8 +76,7 @@
 │  └─ ISSUE_TEMPLATE/
 ├─ next.config.js
 ├─ open-next.config.ts        # Cloudflare Workers ビルド設定
-├─ wrangler.toml              # Cloudflare Workers デプロイ設定
-├─ vercel.json                # 旧Vercel Cron定義（現在は未使用。Cron は wrangler.toml で管理）
+├─ wrangler.toml              # Cloudflare Workers デプロイ設定（Cron トリガー含む）
 ├─ docker-compose.yml         # ローカルDB用（DB は Neon クラウドのため通常不要）
 ├─ prisma/
 │  ├─ schema.prisma
