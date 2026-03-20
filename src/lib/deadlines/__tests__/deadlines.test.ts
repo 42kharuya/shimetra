@@ -1,6 +1,5 @@
 /**
  * Deadline Item バリデーション ユニットテスト
- * 実行: npx tsx src/lib/deadlines/__tests__/deadlines.test.ts
  *
  * テスト戦略:
  *  - validateCreateDeadline / validateUpdateDeadline: DB不要な純粋関数のみ対象
@@ -21,27 +20,10 @@ const VALID_BASE = {
   deadline_at: "2026-04-01T10:00:00+09:00",
 };
 
-async function runAll() {
-  let passed = 0;
-  let failed = 0;
-
-  async function test(name: string, fn: () => void | Promise<void>) {
-    try {
-      await fn();
-      console.log(`  ✓ ${name}`);
-      passed++;
-    } catch (err) {
-      console.error(`  ✗ ${name}`);
-      console.error("   ", err instanceof Error ? err.message : err);
-      failed++;
-    }
-  }
-
-  console.log("\nDeadline バリデーション テスト\n");
-
+describe("Deadline バリデーション", () => {
   // ── 正常系 ──────────────────────────────────────────────────────────────
 
-  await test("最小必須フィールドのみで ok:true を返す", () => {
+  it("最小必須フィールドのみで ok:true を返す", () => {
     const r = validateCreateDeadline(VALID_BASE);
     assert.ok(r.ok);
     if (!r.ok) return;
@@ -52,14 +34,14 @@ async function runAll() {
     assert.equal(r.data.memo, null);
   });
 
-  await test("status を明示指定できる", () => {
+  it("status を明示指定できる", () => {
     const r = validateCreateDeadline({ ...VALID_BASE, status: "submitted" });
     assert.ok(r.ok);
     if (!r.ok) return;
     assert.equal(r.data.status, "submitted");
   });
 
-  await test("link と memo を指定できる", () => {
+  it("link と memo を指定できる", () => {
     const r = validateCreateDeadline({
       ...VALID_BASE,
       link: "https://example.com/job",
@@ -71,14 +53,14 @@ async function runAll() {
     assert.equal(r.data.memo, "ES締切注意");
   });
 
-  await test("kind が interview / briefing / other も受け付ける", () => {
+  it("kind が interview / briefing / other も受け付ける", () => {
     for (const kind of ["interview", "briefing", "other"]) {
       const r = validateCreateDeadline({ ...VALID_BASE, kind });
       assert.ok(r.ok, `kind=${kind} が ok:false になった`);
     }
   });
 
-  await test("deadline_at が Date オブジェクトに変換される", () => {
+  it("deadline_at が Date オブジェクトに変換される", () => {
     const r = validateCreateDeadline({
       ...VALID_BASE,
       deadline_at: "2026-06-15T09:00:00Z",
@@ -88,7 +70,7 @@ async function runAll() {
     assert.ok(r.data.deadlineAt instanceof Date);
   });
 
-  await test("link/memo が空文字の場合は null に正規化される", () => {
+  it("link/memo が空文字の場合は null に正規化される", () => {
     const r = validateCreateDeadline({
       ...VALID_BASE,
       link: "",
@@ -102,14 +84,14 @@ async function runAll() {
 
   // ── 異常系 ──────────────────────────────────────────────────────────────
 
-  await test("company_name が空なら errors に含まれる", () => {
+  it("company_name が空なら errors に含まれる", () => {
     const r = validateCreateDeadline({ ...VALID_BASE, company_name: "" });
     assert.ok(!r.ok);
     if (r.ok) return;
     assert.ok(r.errors.some((e) => e.field === "company_name"));
   });
 
-  await test("company_name が 101 文字超でエラー", () => {
+  it("company_name が 101 文字超でエラー", () => {
     const r = validateCreateDeadline({
       ...VALID_BASE,
       company_name: "あ".repeat(101),
@@ -119,14 +101,14 @@ async function runAll() {
     assert.ok(r.errors.some((e) => e.field === "company_name"));
   });
 
-  await test("kind が不正値ならエラー", () => {
+  it("kind が不正値ならエラー", () => {
     const r = validateCreateDeadline({ ...VALID_BASE, kind: "unknown" });
     assert.ok(!r.ok);
     if (r.ok) return;
     assert.ok(r.errors.some((e) => e.field === "kind"));
   });
 
-  await test("deadline_at が欠落ならエラー", () => {
+  it("deadline_at が欠落ならエラー", () => {
     const { deadline_at: _, ...rest } = VALID_BASE;
     const r = validateCreateDeadline(rest);
     assert.ok(!r.ok);
@@ -134,7 +116,7 @@ async function runAll() {
     assert.ok(r.errors.some((e) => e.field === "deadline_at"));
   });
 
-  await test("deadline_at が不正な文字列ならエラー", () => {
+  it("deadline_at が不正な文字列ならエラー", () => {
     const r = validateCreateDeadline({
       ...VALID_BASE,
       deadline_at: "not-a-date",
@@ -144,7 +126,7 @@ async function runAll() {
     assert.ok(r.errors.some((e) => e.field === "deadline_at"));
   });
 
-  await test("link が http(s) 以外ならエラー", () => {
+  it("link が http(s) 以外ならエラー", () => {
     const r = validateCreateDeadline({
       ...VALID_BASE,
       link: "ftp://example.com",
@@ -154,7 +136,7 @@ async function runAll() {
     assert.ok(r.errors.some((e) => e.field === "link"));
   });
 
-  await test("link が 2049 文字超ならエラー", () => {
+  it("link が 2049 文字超ならエラー", () => {
     const r = validateCreateDeadline({
       ...VALID_BASE,
       link: "https://example.com/" + "a".repeat(2030),
@@ -164,7 +146,7 @@ async function runAll() {
     assert.ok(r.errors.some((e) => e.field === "link"));
   });
 
-  await test("memo が 1001 文字超ならエラー", () => {
+  it("memo が 1001 文字超ならエラー", () => {
     const r = validateCreateDeadline({
       ...VALID_BASE,
       memo: "あ".repeat(1001),
@@ -174,12 +156,12 @@ async function runAll() {
     assert.ok(r.errors.some((e) => e.field === "memo"));
   });
 
-  await test("body が非オブジェクトならエラー", () => {
+  it("body が非オブジェクトならエラー", () => {
     const r = validateCreateDeadline("invalid");
     assert.ok(!r.ok);
   });
 
-  await test("複数フィールドが不正なら errors に複数エントリが返る", () => {
+  it("複数フィールドが不正なら errors に複数エントリが返る", () => {
     const r = validateCreateDeadline({
       company_name: "",
       kind: "bad",
@@ -193,102 +175,94 @@ async function runAll() {
   // ────────────────────────────────────────────────────────────────────
   // validateUpdateDeadline テスト
   // ────────────────────────────────────────────────────────────────────
-  console.log("\nDeadline 更新バリデーション テスト\n");
 
-  await test("status だけ指定して ok:true を返す", () => {
+  it("status だけ指定して ok:true を返す", () => {
     const r = validateUpdateDeadline({ status: "submitted" });
     assert.ok(r.ok);
     if (!r.ok) return;
     assert.equal(r.data.status, "submitted");
   });
 
-  await test("status = submitted が正しく返る", () => {
+  it("status = submitted が正しく返る", () => {
     for (const s of ["todo", "submitted", "done", "canceled"]) {
       const r = validateUpdateDeadline({ status: s });
       assert.ok(r.ok, `status=${s} が ok:false になった`);
     }
   });
 
-  await test("company_name だけ指定して ok:true を返す", () => {
+  it("company_name だけ指定して ok:true を返す", () => {
     const r = validateUpdateDeadline({ company_name: "新会社名" });
     assert.ok(r.ok);
     if (!r.ok) return;
     assert.equal(r.data.companyName, "新会社名");
   });
 
-  await test("link を null で指定すると data.link が null になる", () => {
+  it("link を null で指定すると data.link が null になる", () => {
     const r = validateUpdateDeadline({ status: "todo", link: null });
     assert.ok(r.ok);
     if (!r.ok) return;
     assert.equal(r.data.link, null);
   });
 
-  await test("memo を null で指定すると data.memo が null になる", () => {
+  it("memo を null で指定すると data.memo が null になる", () => {
     const r = validateUpdateDeadline({ status: "done", memo: null });
     assert.ok(r.ok);
     if (!r.ok) return;
     assert.equal(r.data.memo, null);
   });
 
-  await test("フィールドを 1 つも指定しないとエラー", () => {
+  it("フィールドを 1 つも指定しないとエラー", () => {
     const r = validateUpdateDeadline({});
     assert.ok(!r.ok);
     if (r.ok) return;
     assert.ok(r.errors.some((e) => e.field === "_body"));
   });
 
-  await test("body が非オブジェクトならエラー（update）", () => {
+  it("body が非オブジェクトならエラー（update）", () => {
     const r = validateUpdateDeadline(null);
     assert.ok(!r.ok);
   });
 
-  await test("status が不正値ならエラー（update）", () => {
+  it("status が不正値ならエラー（update）", () => {
     const r = validateUpdateDeadline({ status: "invalid" });
     assert.ok(!r.ok);
     if (r.ok) return;
     assert.ok(r.errors.some((e) => e.field === "status"));
   });
 
-  await test("company_name が空文字ならエラー（update）", () => {
+  it("company_name が空文字ならエラー（update）", () => {
     const r = validateUpdateDeadline({ company_name: "" });
     assert.ok(!r.ok);
     if (r.ok) return;
     assert.ok(r.errors.some((e) => e.field === "company_name"));
   });
 
-  await test("company_name が 101 文字超ならエラー（update）", () => {
+  it("company_name が 101 文字超ならエラー（update）", () => {
     const r = validateUpdateDeadline({ company_name: "あ".repeat(101) });
     assert.ok(!r.ok);
     if (r.ok) return;
     assert.ok(r.errors.some((e) => e.field === "company_name"));
   });
 
-  await test("link が http(s) 以外ならエラー（update）", () => {
+  it("link が http(s) 以外ならエラー（update）", () => {
     const r = validateUpdateDeadline({ link: "ftp://example.com" });
     assert.ok(!r.ok);
     if (r.ok) return;
     assert.ok(r.errors.some((e) => e.field === "link"));
   });
 
-  await test("deadline_at が不正な文字列ならエラー（update）", () => {
+  it("deadline_at が不正な文字列ならエラー（update）", () => {
     const r = validateUpdateDeadline({ deadline_at: "not-a-date" });
     assert.ok(!r.ok);
     if (r.ok) return;
     assert.ok(r.errors.some((e) => e.field === "deadline_at"));
   });
 
-  await test("memo が 1001 文字超ならエラー（update）", () => {
+  it("memo が 1001 文字超ならエラー（update）", () => {
     const r = validateUpdateDeadline({ memo: "あ".repeat(1001) });
     assert.ok(!r.ok);
     if (r.ok) return;
     assert.ok(r.errors.some((e) => e.field === "memo"));
   });
 
-  console.log(`\n${passed} passed, ${failed} failed\n`);
-  if (failed > 0) process.exit(1);
-}
-
-runAll().catch((err) => {
-  console.error(err);
-  process.exit(1);
 });

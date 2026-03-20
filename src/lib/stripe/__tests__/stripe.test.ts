@@ -1,6 +1,5 @@
 /**
  * Stripe checkout 最小テスト
- * 実行: npm run test:stripe
  *
  * テスト戦略:
  *  - STRIPE_SECRET_KEY 未設定時にエラーが throw されるか
@@ -20,25 +19,8 @@ function getRequiredEnv(key: string): string {
   return value;
 }
 
-async function runAll() {
-  let passed = 0;
-  let failed = 0;
-
-  async function test(name: string, fn: () => void | Promise<void>) {
-    try {
-      await fn();
-      console.log(`  ✓ ${name}`);
-      passed++;
-    } catch (err) {
-      console.error(`  ✗ ${name}`);
-      console.error("   ", err instanceof Error ? err.message : err);
-      failed++;
-    }
-  }
-
-  console.log("\nStripe checkout テスト\n");
-
-  await test("getRequiredEnv: 未設定の変数は Error を throw する", () => {
+describe("Stripe checkout", () => {
+  it("getRequiredEnv: 未設定の変数は Error を throw する", () => {
     const missingKey = "__NONEXISTENT_ENV_VAR_FOR_TEST__";
     delete process.env[missingKey];
     assert.throws(
@@ -51,7 +33,7 @@ async function runAll() {
     );
   });
 
-  await test("getRequiredEnv: 設定済みの変数は値を返す", () => {
+  it("getRequiredEnv: 設定済みの変数は値を返す", () => {
     const key = "__TEST_ENV_VAR__";
     process.env[key] = "test-value";
     const val = getRequiredEnv(key);
@@ -59,7 +41,7 @@ async function runAll() {
     delete process.env[key];
   });
 
-  await test("stripe クライアント初期化: STRIPE_SECRET_KEY 未設定は Error を throw する", async () => {
+  it("stripe クライアント初期化: STRIPE_SECRET_KEY 未設定は Error を throw する", async () => {
     const originalKey = process.env.STRIPE_SECRET_KEY;
     delete process.env.STRIPE_SECRET_KEY;
 
@@ -77,11 +59,4 @@ async function runAll() {
     }
   });
 
-  console.log(`\n${passed} passed / ${failed} failed\n`);
-  if (failed > 0) process.exit(1);
-}
-
-runAll().catch((err) => {
-  console.error("テスト実行エラー:", err);
-  process.exit(1);
 });

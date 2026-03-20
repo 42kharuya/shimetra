@@ -3,7 +3,6 @@
  *
  * gate.ts のユニットテスト（純粋に検証できる部分のみ）
  *
- * 実行: npx tsx src/lib/deadlines/__tests__/gate.test.ts
  *
  * テスト戦略:
  *  - FREE_ITEM_LIMIT: 定数値の検証
@@ -36,38 +35,12 @@
 import assert from "node:assert/strict";
 import { FREE_ITEM_LIMIT } from "../gate";
 
-async function runAll() {
-  let passed = 0;
-  let failed = 0;
-
-  async function test(name: string, fn: () => void | Promise<void>) {
-    try {
-      await fn();
-      console.log(`  ✓ ${name}`);
-      passed++;
-    } catch (err) {
-      console.error(`  ✗ ${name}`);
-      console.error("   ", err instanceof Error ? err.message : err);
-      failed++;
-    }
-  }
-
-  console.log("\nPro/Free ゲート テスト\n");
-
-  await test("FREE_ITEM_LIMIT が 10 である", () => {
+describe("Pro/Free ゲート", () => {
+  it("FREE_ITEM_LIMIT が 10 である", () => {
     assert.equal(FREE_ITEM_LIMIT, 10);
   });
 
-  await test("FREE_ITEM_LIMIT が number 型である", () => {
+  it("FREE_ITEM_LIMIT が number 型である", () => {
     assert.equal(typeof FREE_ITEM_LIMIT, "number");
   });
-
-  // 結果サマリー
-  console.log(`\n結果: ${passed} passed, ${failed} failed\n`);
-  if (failed > 0) process.exit(1);
-}
-
-runAll().catch((err) => {
-  console.error("予期しないエラー:", err);
-  process.exit(1);
 });

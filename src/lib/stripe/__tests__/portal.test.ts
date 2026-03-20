@@ -1,6 +1,5 @@
 /**
  * Stripe Customer Portal API 最小テスト
- * 実行: npm run test:portal
  *
  * テスト戦略:
  *  - APP_URL 未設定時に Error が throw されるか
@@ -29,25 +28,8 @@ function resolvePortalError(stripeCustomerId: string | null | undefined): string
   return null;
 }
 
-async function runAll() {
-  let passed = 0;
-  let failed = 0;
-
-  async function test(name: string, fn: () => void | Promise<void>) {
-    try {
-      await fn();
-      console.log(`  ✓ ${name}`);
-      passed++;
-    } catch (err) {
-      console.error(`  ✗ ${name}`);
-      console.error("   ", err instanceof Error ? err.message : err);
-      failed++;
-    }
-  }
-
-  console.log("\nStripe Customer Portal テスト\n");
-
-  await test("requireEnv: 未設定の変数は Error を throw する", () => {
+describe("Stripe Customer Portal", () => {
+  it("requireEnv: 未設定の変数は Error を throw する", () => {
     const missingKey = "__NONEXISTENT_PORTAL_ENV_VAR__";
     delete process.env[missingKey];
     assert.throws(
@@ -60,7 +42,7 @@ async function runAll() {
     );
   });
 
-  await test("requireEnv: 設定済みの変数は値を返す", () => {
+  it("requireEnv: 設定済みの変数は値を返す", () => {
     const key = "__TEST_PORTAL_ENV_VAR__";
     process.env[key] = "http://localhost:3000";
     const val = requireEnv(key);
@@ -68,24 +50,24 @@ async function runAll() {
     delete process.env[key];
   });
 
-  await test("resolvePortalError: stripeCustomerId が null → エラーメッセージを返す", () => {
+  it("resolvePortalError: stripeCustomerId が null → エラーメッセージを返す", () => {
     const err = resolvePortalError(null);
     assert.ok(err !== null);
     assert.ok(err.includes("アップグレード"));
   });
 
-  await test("resolvePortalError: stripeCustomerId が undefined → エラーメッセージを返す", () => {
+  it("resolvePortalError: stripeCustomerId が undefined → エラーメッセージを返す", () => {
     const err = resolvePortalError(undefined);
     assert.ok(err !== null);
     assert.ok(err.includes("アップグレード"));
   });
 
-  await test("resolvePortalError: stripeCustomerId が設定済み → null（エラーなし）", () => {
+  it("resolvePortalError: stripeCustomerId が設定済み → null（エラーなし）", () => {
     const err = resolvePortalError("cus_test_12345");
     assert.equal(err, null);
   });
 
-  await test("STRIPE_SECRET_KEY 未設定は Error を throw する（portal route も同じ依存）", () => {
+  it("STRIPE_SECRET_KEY 未設定は Error を throw する（portal route も同じ依存）", () => {
     const originalKey = process.env.STRIPE_SECRET_KEY;
     delete process.env.STRIPE_SECRET_KEY;
     try {
@@ -101,11 +83,4 @@ async function runAll() {
     }
   });
 
-  console.log(`\n${passed} passed / ${failed} failed\n`);
-  if (failed > 0) process.exit(1);
-}
-
-runAll().catch((err) => {
-  console.error("テスト実行エラー:", err);
-  process.exit(1);
 });

@@ -2,7 +2,6 @@
  * src/lib/__tests__/env.test.ts
  *
  * env.ts ユニットテスト
- * 実行: npm run test:env
  *
  * テスト戦略:
  *  - validateAllEnv(): 必須変数の欠損・条件付き必須・全設定時の挙動
@@ -54,33 +53,16 @@ function withEnv(
 
 // ── テスト本体 ─────────────────────────────────────────────────────────────
 
-async function runAll() {
-  let passed = 0;
-  let failed = 0;
-
-  async function test(name: string, fn: () => void | Promise<void>) {
-    try {
-      await fn();
-      console.log(`  ✓ ${name}`);
-      passed++;
-    } catch (err) {
-      console.error(`  ✗ ${name}`);
-      console.error("   ", err instanceof Error ? err.message : err);
-      failed++;
-    }
-  }
-
-  console.log("\nenv バリデーション テスト\n");
-
+describe("env バリデーション", () => {
   // ── validateAllEnv ──────────────────────────────────────────────────────
 
-  await test("validateAllEnv: 全必須変数が揃っていれば throw しない", () => {
+  it("validateAllEnv: 全必須変数が揃っていれば throw しない", () => {
     withEnv(REQUIRED_ENV, () => {
       assert.doesNotThrow(() => validateAllEnv());
     });
   });
 
-  await test("validateAllEnv: DATABASE_URL 未設定は Error を throw する", () => {
+  it("validateAllEnv: DATABASE_URL 未設定は Error を throw する", () => {
     withEnv({ ...REQUIRED_ENV, DATABASE_URL: undefined }, () => {
       assert.throws(
         () => validateAllEnv(),
@@ -96,7 +78,7 @@ async function runAll() {
     });
   });
 
-  await test("validateAllEnv: 複数変数欠損時に一覧を含む Error を throw する", () => {
+  it("validateAllEnv: 複数変数欠損時に一覧を含む Error を throw する", () => {
     withEnv(
       { ...REQUIRED_ENV, AUTH_SECRET: undefined, STRIPE_SECRET_KEY: undefined },
       () => {
@@ -119,7 +101,7 @@ async function runAll() {
     );
   });
 
-  await test(
+  it(
     "validateAllEnv: EMAIL_PROVIDER=resend で RESEND_API_KEY 未設定は throw する",
     () => {
       withEnv(
@@ -148,13 +130,13 @@ async function runAll() {
 
   // ── env getter ────────────────────────────────────────────────────────
 
-  await test("env.DATABASE_URL: 設定済みの場合は値を返す", () => {
+  it("env.DATABASE_URL: 設定済みの場合は値を返す", () => {
     withEnv({ DATABASE_URL: "postgresql://localhost/test" }, () => {
       assert.equal(env.DATABASE_URL, "postgresql://localhost/test");
     });
   });
 
-  await test("env.DATABASE_URL: 未設定の場合は Error を throw する", () => {
+  it("env.DATABASE_URL: 未設定の場合は Error を throw する", () => {
     withEnv({ DATABASE_URL: undefined }, () => {
       assert.throws(
         () => env.DATABASE_URL,
@@ -170,37 +152,37 @@ async function runAll() {
     });
   });
 
-  await test("env.APP_URL: 未設定時はデフォルト値を返す", () => {
+  it("env.APP_URL: 未設定時はデフォルト値を返す", () => {
     withEnv({ APP_URL: undefined }, () => {
       assert.equal(env.APP_URL, "http://localhost:3000");
     });
   });
 
-  await test("env.APP_URL: 設定済みの場合は設定値を返す", () => {
+  it("env.APP_URL: 設定済みの場合は設定値を返す", () => {
     withEnv({ APP_URL: "https://app.example.com" }, () => {
       assert.equal(env.APP_URL, "https://app.example.com");
     });
   });
 
-  await test("env.MAGIC_LINK_EXPIRY_MINUTES: 未設定時はデフォルト 30 を返す", () => {
+  it("env.MAGIC_LINK_EXPIRY_MINUTES: 未設定時はデフォルト 30 を返す", () => {
     withEnv({ MAGIC_LINK_EXPIRY_MINUTES: undefined }, () => {
       assert.equal(env.MAGIC_LINK_EXPIRY_MINUTES, 30);
     });
   });
 
-  await test("env.EMAIL_PROVIDER: 未設定時は 'console' を返す", () => {
+  it("env.EMAIL_PROVIDER: 未設定時は 'console' を返す", () => {
     withEnv({ EMAIL_PROVIDER: undefined }, () => {
       assert.equal(env.EMAIL_PROVIDER, "console");
     });
   });
 
-  await test("env.EMAIL_PROVIDER: 'resend' 設定時は 'resend' を返す", () => {
+  it("env.EMAIL_PROVIDER: 'resend' 設定時は 'resend' を返す", () => {
     withEnv({ EMAIL_PROVIDER: "resend" }, () => {
       assert.equal(env.EMAIL_PROVIDER, "resend");
     });
   });
 
-  await test("env.AUTH_SECRET: 未設定の場合は Error を throw する", () => {
+  it("env.AUTH_SECRET: 未設定の場合は Error を throw する", () => {
     withEnv({ AUTH_SECRET: undefined }, () => {
       assert.throws(
         () => env.AUTH_SECRET,
@@ -213,11 +195,4 @@ async function runAll() {
     });
   });
 
-  console.log(`\n${passed} passed / ${failed} failed\n`);
-  if (failed > 0) process.exit(1);
-}
-
-runAll().catch((err) => {
-  console.error("テスト実行エラー:", err);
-  process.exit(1);
 });

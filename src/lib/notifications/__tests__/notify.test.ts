@@ -3,7 +3,6 @@
  *
  * 通知ロジックのユニットテスト（DB・メール送信不要な純粋関数のみ）
  *
- * 実行: npx tsx src/lib/notifications/__tests__/notify.test.ts
  *
  * テスト対象:
  *  - offsetLabel: オフセット分数 → 表示ラベルの変換
@@ -60,56 +59,39 @@ import {
   CRON_WINDOW_MINUTES,
 } from "../notify";
 
-async function runAll() {
-  let passed = 0;
-  let failed = 0;
-
-  async function test(name: string, fn: () => void | Promise<void>) {
-    try {
-      await fn();
-      console.log(`  ✓ ${name}`);
-      passed++;
-    } catch (err) {
-      console.error(`  ✗ ${name}`);
-      console.error("   ", err instanceof Error ? err.message : err);
-      failed++;
-    }
-  }
-
-  console.log("\n通知ロジック テスト\n");
-
+describe("通知ロジック", () => {
   // --- 定数チェック ---
-  await test("OFFSETS_FREE は [1440] である", () => {
+  it("OFFSETS_FREE は [1440] である", () => {
     assert.deepEqual(OFFSETS_FREE, [1440]);
   });
 
-  await test("OFFSETS_PRO は [4320, 1440, 180] である", () => {
+  it("OFFSETS_PRO は [4320, 1440, 180] である", () => {
     assert.deepEqual(OFFSETS_PRO, [4320, 1440, 180]);
   });
 
-  await test("CRON_WINDOW_MINUTES は 10 である", () => {
+  it("CRON_WINDOW_MINUTES は 10 である", () => {
     assert.equal(CRON_WINDOW_MINUTES, 10);
   });
 
   // --- offsetLabel ---
-  await test("offsetLabel(4320) は '72時間' を返す", () => {
+  it("offsetLabel(4320) は '72時間' を返す", () => {
     assert.equal(offsetLabel(4320), "72時間");
   });
 
-  await test("offsetLabel(1440) は '24時間' を返す", () => {
+  it("offsetLabel(1440) は '24時間' を返す", () => {
     assert.equal(offsetLabel(1440), "24時間");
   });
 
-  await test("offsetLabel(180) は '3時間' を返す", () => {
+  it("offsetLabel(180) は '3時間' を返す", () => {
     assert.equal(offsetLabel(180), "3時間");
   });
 
-  await test("offsetLabel(60) は '60分' を返す（未定義値のフォールバック）", () => {
+  it("offsetLabel(60) は '60分' を返す（未定義値のフォールバック）", () => {
     assert.equal(offsetLabel(60), "60分");
   });
 
   // --- buildNotificationHtml ---
-  await test("buildNotificationHtml: subject に企業名・オフセットラベルが含まれる", () => {
+  it("buildNotificationHtml: subject に企業名・オフセットラベルが含まれる", () => {
     const result = buildNotificationHtml({
       companyName: "テスト株式会社",
       kind: "es",
@@ -122,7 +104,7 @@ async function runAll() {
     assert.ok(result.subject.includes("ES"), "subject に種別がない");
   });
 
-  await test("buildNotificationHtml: html にダッシュボードリンクが含まれる", () => {
+  it("buildNotificationHtml: html にダッシュボードリンクが含まれる", () => {
     const result = buildNotificationHtml({
       companyName: "テスト株式会社",
       kind: "interview",
@@ -134,7 +116,7 @@ async function runAll() {
     assert.ok(result.html.includes("3時間"), "html にオフセットラベルがない");
   });
 
-  await test("buildNotificationHtml: text が生成される", () => {
+  it("buildNotificationHtml: text が生成される", () => {
     const result = buildNotificationHtml({
       companyName: "テスト株式会社",
       kind: "briefing",
@@ -146,7 +128,7 @@ async function runAll() {
     assert.ok(result.text.includes("72時間"), "text にオフセットラベルがない");
   });
 
-  await test("buildNotificationHtml: deadline_at の JST 表示が正しい", () => {
+  it("buildNotificationHtml: deadline_at の JST 表示が正しい", () => {
     // UTC 2026-03-18 15:00:00 → JST 2026-03-19 00:00
     const result = buildNotificationHtml({
       companyName: "テスト株式会社",
@@ -158,13 +140,4 @@ async function runAll() {
     // JST: 2026-03-19 00:00 が html に含まれること
     assert.ok(result.html.includes("2026-03-19 00:00"), `JST 変換が正しくない: ${result.html}`);
   });
-
-  // --- まとめ ---
-  console.log(`\n結果: ${passed} 件成功, ${failed} 件失敗\n`);
-  if (failed > 0) process.exit(1);
-}
-
-runAll().catch((err) => {
-  console.error("テスト実行エラー:", err);
-  process.exit(1);
 });
