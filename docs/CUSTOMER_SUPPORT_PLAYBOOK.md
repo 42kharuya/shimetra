@@ -5,7 +5,7 @@
 ## 1) 入口
 
 - 入口: [SUPPORT.md](../SUPPORT.md)
-- 使う手段（メール/フォーム/Issue）:　kharuya.0411.k@gmail.com
+- 使う手段（メール/フォーム/Issue）:　support@shimetra.com
 - 返信する人: 自分
 
 ## 2) SLA（目安）

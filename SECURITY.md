@@ -4,7 +4,7 @@
 
 公開 Issue ではなく、メンテナに非公開で連絡してください。
 
-- 連絡先: kharuya.0411.k@gmail.com
+- 連絡先: support@shimetra.com
 - 期待する情報:
   - 再現手順
   - 影響範囲

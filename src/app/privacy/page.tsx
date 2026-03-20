@@ -87,10 +87,10 @@ export default function PrivacyPage() {
           アカウントを削除すると、関連する全データ（締切データ・通知履歴）を削除します。
           削除依頼はメールにてお問い合わせください：
           <a
-            href="mailto:support@example.com"
+            href="mailto:support@shimetra.com"
             className="ml-1 text-blue-600 hover:underline"
           >
-            support@example.com
+            support@shimetra.com
           </a>
           <br />
           <span className="text-xs text-slate-500">（※ドメインはローンチ前に実際のアドレスに変更してください）</span>
@@ -113,10 +113,10 @@ export default function PrivacyPage() {
           <br />
           メール：
           <a
-            href="mailto:support@example.com"
+            href="mailto:support@shimetra.com"
             className="text-blue-600 hover:underline"
           >
-            support@example.com
+            support@shimetra.com
           </a>
         </p>
       </section>
