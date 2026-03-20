@@ -7,22 +7,24 @@
 ### 0001: MVPの技術前提（Hosting/Auth/DB/Timezone）
 
 - Decision:
-  - Hosting: Vercel
+  - Hosting: Cloudflare Workers（`@opennextjs/cloudflare` v1）
   - Auth: メールマジックリンク（パスワードなし）
-  - DB/ORM: Postgres + Prisma
+  - DB/ORM: Neon PostgreSQL（`@neondatabase/serverless`）+ Prisma 7
   - Timezone: JST固定（ユーザーTZは保持しない）
 - Rationale:
   - 2週間MVP・1人開発の制約下で、実装/運用コストを最小化しつつ要件（締切管理・通知・課金）を満たす。
+  - Cloudflare Workersはエッジ実行・無料枠が広く、Cron Triggersが組み込みで使えるためMVPに適合する。
   - マジックリンクはパスワード管理/リセット導線が不要で、MVPの認証実装を短縮できる。
-  - Prisma + Postgresは型安全・マイグレーション運用が枯れており、CRUD中心のMVPに適合する。
+  - Prisma + Neon PostgreSQLはサーバーレス対応で型安全・マイグレーション運用が枯れており、CRUD中心のMVPに適合する。
   - 日本向け前提のためJST固定にして日時バグの面積を減らす。
 - Alternatives:
-  - Hosting: Cloudflare / AWS
+  - Hosting: Vercel / AWS
   - Auth: メール+パスワード（確認メールあり）、Supabase Auth等のマネージドAuth
   - ORM: Drizzle
   - Timezone: ユーザーTZ保存（将来拡張に強いが工数増）
 - Impact:
-  - Vercel上でWebhook/Cronを実装する前提のAPI設計になる。
+  - Cloudflare Workers + Cron Triggersを前提としたAPI設計になる。
+  - Neon PostgreSQLはWebSocket接続（`@neondatabase/serverless`）でCloudflare Workersと接続する。
   - 認証はメール到達性が重要になるため、メール基盤/ドメイン設定が運用品質に直結する。
   - Signupの定義（PRD準拠）：メール確認（マジックリンクのクリック）が完了し、ユーザー作成が確定した時点。
   - タイムゾーン対応は後で拡張する（現時点はJSTのみ）。
@@ -111,7 +113,7 @@
 ### 0004: MVPのAPI設計（締切/課金/通知）
 
 - Decision:
-  - APIは3領域に限定し、Vercel上のServerless APIとして実装する（フレームワークは将来差し替え可能だが、パスは /api/... に統一）。
+  - APIは3領域に限定し、Cloudflare Workers上のEdge APIとして実装する（フレームワークはNext.js App Router、パスは /api/... に統一）。
     - 締切CRUD
       - GET /api/deadlines
       - POST /api/deadlines （Freeは10件制限）
@@ -121,7 +123,7 @@
       - POST /api/stripe/checkout （Checkout Session作成）
       - POST /api/stripe/webhook （署名検証→subscriptions更新）
       - POST /api/stripe/portal （Customer Portal Session作成）
-    - 通知（Vercel Cron）
+    - 通知（Cloudflare Cron Triggers）
       - POST /api/cron/notify （CRON_SECRETで保護、対象抽出→メール送信）
 - Rationale:
   - 要件の中心が締切・通知・課金であり、それ以外のAPIはMVPに不要。

@@ -1,6 +1,6 @@
 # Development Guide
 
-スタック: Next.js (App Router) + TypeScript + Tailwind CSS + Prisma + PostgreSQL
+スタック: Next.js 15 (App Router) + TypeScript 5 + Tailwind CSS 3 + Prisma 7 + Neon PostgreSQL + Cloudflare Workers
 
 ## 開発フロー
 

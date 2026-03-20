@@ -154,7 +154,7 @@ curl -X POST http://localhost:3000/api/cron/notify \
 ## フェーズ 4: 本番スモークテスト（デプロイ後）
 
 ```bash
-BASE_URL=https://your-app.vercel.app bash scripts/smoke-test.sh
+BASE_URL=https://your-app.workers.dev bash scripts/smoke-test.sh
 ```
 
 追加で手動確認:

@@ -19,5 +19,5 @@ MVPで「やりすぎない」ための最小チェックです。
 
 ## 3) 計測（最低限）
 
-- [ ] `signup` / `activation` がイベントで取れている（[docs/ANALYTICS_SPEC_TEMPLATE.md](ANALYTICS_SPEC_TEMPLATE.md)）
+- [ ] `signup` / `activation` がイベントで取れている（[docs/ANALYTICS_SPEC.md](ANALYTICS_SPEC.md)）
 - [ ] UTMをイベントに紐づけられる（可能なら）

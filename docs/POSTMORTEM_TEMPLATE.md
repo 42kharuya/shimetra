@@ -31,4 +31,4 @@
 - [ ] （例）テストを追加
 - [ ] （例）手順書を更新
 
-関連: [docs/RUNBOOK_TEMPLATE.md](RUNBOOK_TEMPLATE.md)
+関連: [docs/RUNBOOK.md](RUNBOOK.md)
