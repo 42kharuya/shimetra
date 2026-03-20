@@ -1,16 +1,5 @@
 import Link from "next/link";
-
-const FREE_FEATURES = [
-  "締切アイテム 10件まで",
-  "締切 24時間前のメール通知",
-  "ステータス管理（応募予定・提出済など）",
-];
-
-const PRO_FEATURES = [
-  "締切アイテム 無制限",
-  "締切 72時間 / 24時間 / 3時間前の通知",
-  "FREE の全機能",
-];
+import { FREE_FEATURES, PRO_FEATURES } from "@/config/plans";
 
 export default function HomePage() {
   return (

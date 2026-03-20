@@ -5,9 +5,9 @@
  * 同じロジックが route.ts / billing/page.tsx に重複しないよう一箇所に集約する。
  */
 import { prisma } from "@/lib/prisma";
+import { FREE_ITEM_LIMIT } from "@/config/plans";
 
-/** Free ユーザーが作成できる最大件数 */
-export const FREE_ITEM_LIMIT = 10;
+export { FREE_ITEM_LIMIT };
 
 /**
  * subscriptions レコードを見て Pro か判定する。
