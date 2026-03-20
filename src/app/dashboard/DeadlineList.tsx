@@ -8,7 +8,7 @@ import {
   URGENCY_CLASS,
   KIND_LABEL,
   STATUS_LABEL,
-} from "@/lib/deadlines/format";
+} from "@/features/deadlines/format";
 
 export type DeadlineItem = {
   id: string;

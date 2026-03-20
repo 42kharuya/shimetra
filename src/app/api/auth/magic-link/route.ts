@@ -9,7 +9,7 @@
 export const dynamic = "force-dynamic";
 
 import { NextRequest, NextResponse } from "next/server";
-import { createMagicLinkToken } from "@/lib/auth/token";
+import { createMagicLinkToken } from "@/features/auth/token";
 import { sendEmail } from "@/lib/mailer";
 import { env } from "@/lib/env";
 import {

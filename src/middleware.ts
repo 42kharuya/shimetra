@@ -11,7 +11,7 @@
  * Edge Runtime 対応（jose を使用）。
  */
 import { NextRequest, NextResponse } from "next/server";
-import { getSession } from "@/lib/auth/session";
+import { getSession } from "@/features/auth/session";
 import { validateAllEnv } from "@/lib/env";
 
 // CF Workers / Edge Runtime のモジュール初期化時に全必須変数を一括検証する。

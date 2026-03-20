@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { KIND_LABEL } from "@/lib/deadlines/format";
+import { KIND_LABEL } from "@/features/deadlines/format";
 
 type FieldErrors = Record<string, string>;
 

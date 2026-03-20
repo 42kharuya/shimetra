@@ -18,7 +18,7 @@
 import { prisma } from "@/lib/prisma";
 import type { Prisma } from "@prisma/client";
 import { sendEmail } from "@/lib/mailer";
-import { isProUser } from "@/lib/deadlines/gate";
+import { isProUser } from "@/features/deadlines/gate";
 import { env } from "@/lib/env";
 
 /** Free プランの通知オフセット（分） */

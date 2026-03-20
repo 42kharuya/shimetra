@@ -37,11 +37,11 @@
 export const dynamic = "force-dynamic";
 
 import { NextRequest, NextResponse } from "next/server";
-import { getSession } from "@/lib/auth/session";
+import { getSession } from "@/features/auth/session";
 import { prisma } from "@/lib/prisma";
-import { validateCreateDeadline } from "@/lib/deadlines/validate";
-import { FREE_ITEM_LIMIT, isProUser } from "@/lib/deadlines/gate";
-import { trackEvent } from "@/lib/analytics";
+import { validateCreateDeadline } from "@/features/deadlines/validate";
+import { FREE_ITEM_LIMIT, isProUser } from "@/features/deadlines/gate";
+import { trackEvent } from "@/features/analytics";
 
 export async function POST(req: NextRequest) {
   try {

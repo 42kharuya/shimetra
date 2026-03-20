@@ -11,10 +11,10 @@
 export const dynamic = "force-dynamic";
 
 import { NextRequest, NextResponse } from "next/server";
-import { consumeMagicLinkToken } from "@/lib/auth/token";
-import { createSessionToken, sessionCookieOptions } from "@/lib/auth/session";
+import { consumeMagicLinkToken } from "@/features/auth/token";
+import { createSessionToken, sessionCookieOptions } from "@/features/auth/session";
 import { prisma } from "@/lib/prisma";
-import { trackEvent } from "@/lib/analytics";
+import { trackEvent } from "@/features/analytics";
 
 export async function GET(req: NextRequest) {
   // コピー時の末尾 \ 等の非hex文字を除去するサニタイズ

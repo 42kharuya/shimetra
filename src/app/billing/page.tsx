@@ -1,6 +1,6 @@
 import { redirect } from "next/navigation";
-import { getSession } from "@/lib/auth/session";
-import { getUserPlan } from "@/lib/deadlines/gate";
+import { getSession } from "@/features/auth/session";
+import { getUserPlan } from "@/features/deadlines/gate";
 import { UpgradeButton } from "./UpgradeButton";
 import { PortalButton } from "./PortalButton";
 

@@ -31,7 +31,7 @@
 export const dynamic = "force-dynamic";
 
 import { NextRequest, NextResponse } from "next/server";
-import { findAndDeliverNotifications } from "@/lib/notifications/notify";
+import { findAndDeliverNotifications } from "@/features/notifications/notify";
 import { env } from "@/lib/env";
 
 /** GET は許可しない */

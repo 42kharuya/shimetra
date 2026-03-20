@@ -32,8 +32,8 @@ export const dynamic = "force-dynamic";
 
 import { NextRequest, NextResponse } from "next/server";
 import { getStripe } from "@/lib/stripe";
-import { upsertSubscription } from "@/lib/stripe/webhook";
-import { trackEvent } from "@/lib/analytics";
+import { upsertSubscription } from "@/features/billing/webhook";
+import { trackEvent } from "@/features/analytics";
 import { env } from "@/lib/env";
 import type Stripe from "stripe";
 
