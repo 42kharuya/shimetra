@@ -111,7 +111,7 @@ export async function findAndDeliverNotifications(): Promise<NotifyResult> {
   const deadlineFrom = new Date(now.getTime() - windowMs);
   const deadlineTo = new Date(now.getTime() + maxOffsetMs + windowMs);
 
-  // withAccelerate() 拡張型で include の型推論が崩れるため明示的に型付け
+  // Neon アダプター経由では include の型推論が崩れるため明示的に型付け
   const items = (await prisma.deadlineItem.findMany({
     where: {
       deadlineAt: { gte: deadlineFrom, lte: deadlineTo },

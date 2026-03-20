@@ -25,21 +25,22 @@ export async function GET(req: NextRequest) {
     return NextResponse.redirect(new URL("/login?error=invalid", req.url));
   }
 
-  let email: string | null = null;
+  let tokenResult: Awaited<ReturnType<typeof consumeMagicLinkToken>>;
   try {
-    console.log("[verify] token received:", token.slice(0, 8) + "...");
-    email = await consumeMagicLinkToken(token);
-    console.log("[verify] consumeMagicLinkToken result:", email);
+    tokenResult = await consumeMagicLinkToken(token);
   } catch (err) {
     console.error("[verify] consumeMagicLinkToken error:", err);
     return NextResponse.redirect(new URL("/login?error=server", req.url));
   }
 
-  if (!email) {
-    // トークン無効（存在しない / 期限切れ / 使用済み）
-    console.log("[verify] email is null → redirect expired");
-    return NextResponse.redirect(new URL("/login?error=expired", req.url));
+  if (!tokenResult.ok) {
+    // expired: リンクが期限切れ → 再送を促す
+    // invalid: 存在しない / 使用済み → 無効なリンク
+    const errorParam = tokenResult.reason === "expired" ? "expired" : "invalid";
+    return NextResponse.redirect(new URL(`/login?error=${errorParam}`, req.url));
   }
+
+  const email = tokenResult.email;
 
   try {
     // Signup確定: メール確認完了をもってユーザーを作成する（既存なら取得のみ）

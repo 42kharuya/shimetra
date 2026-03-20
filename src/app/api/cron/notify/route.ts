@@ -10,7 +10,7 @@
  *
  * 環境変数:
  *  CRON_SECRET  Cron 呼び出し用シークレット（必須）
- *               Vercel の環境変数 / ローカルは .env に設定
+ *               wrangler secret put CRON_SECRET で登録する
  *
  * 呼び出し方（例）:
  *  curl -X POST http://localhost:3000/api/cron/notify \
@@ -21,8 +21,9 @@
  *  { error: string }                    401  認証失敗
  *  { error: string }                    500  サーバーエラー
  *
- * Vercel Cron 設定（vercel.json）:
- *  "crons": [{ "path": "/api/cron/notify", "schedule": "* /10 * * * *" }]
+ * Cloudflare Cron 設定（wrangler.toml）:
+ *  [triggers]
+ *  crons = ["* /10 * * * *"]
  *  ※ schedule: 10分間隔（"星印/10 * * * *"形式、JSDoc上の都合でスペース挿入済み）
  */
 
