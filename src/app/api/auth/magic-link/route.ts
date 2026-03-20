@@ -12,11 +12,38 @@ import { NextRequest, NextResponse } from "next/server";
 import { createMagicLinkToken } from "@/lib/auth/token";
 import { sendEmail } from "@/lib/mailer";
 import { env } from "@/lib/env";
+import {
+  checkMagicLinkRateLimit,
+  getIdentifier,
+  RATE_LIMIT_MAGIC_LINK_MAX,
+  RATE_LIMIT_MAGIC_LINK_WINDOW_SEC,
+} from "@/lib/ratelimit";
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 export async function POST(req: NextRequest) {
   try {
+    // ── レート制限チェック ──────────────────────────────────────────────
+    const identifier = getIdentifier(req);
+    const rateResult = await checkMagicLinkRateLimit(identifier);
+    if (rateResult.limited) {
+      const retryAfterSec = Math.ceil((rateResult.reset - Date.now()) / 1000);
+      return NextResponse.json(
+        {
+          error: `リクエストが多すぎます。${Math.ceil(RATE_LIMIT_MAGIC_LINK_WINDOW_SEC / 60)}分後に再試行してください`,
+          retryAfter: retryAfterSec,
+        },
+        {
+          status: 429,
+          headers: {
+            "Retry-After": String(Math.max(retryAfterSec, 1)),
+            "X-RateLimit-Limit": String(RATE_LIMIT_MAGIC_LINK_MAX),
+            "X-RateLimit-Reset": String(rateResult.reset),
+          },
+        },
+      );
+    }
+
     const body = await req.json().catch(() => ({}));
     const email =
       typeof body?.email === "string"

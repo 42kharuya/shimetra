@@ -49,6 +49,12 @@ export const envSchema = z
     EMAIL_FROM: z.string().optional(),
     ANALYTICS_WRITE_KEY: z.string().optional(),
     SENTRY_DSN: z.string().optional(),
+
+    // === レート制限（Upstash Redis、任意）===
+    UPSTASH_REDIS_REST_URL: z.string().optional(),
+    UPSTASH_REDIS_REST_TOKEN: z.string().optional(),
+    RATE_LIMIT_MAGIC_LINK_MAX: z.coerce.number().int().positive().optional(),
+    RATE_LIMIT_MAGIC_LINK_WINDOW_SEC: z.coerce.number().int().positive().optional(),
   })
   .superRefine((data, ctx) => {
     // EMAIL_PROVIDER=resend のとき RESEND_API_KEY / EMAIL_FROM が必須
@@ -200,5 +206,17 @@ export const env = {
   /** Sentry DSN（任意） */
   get SENTRY_DSN(): string | undefined {
     return process.env.SENTRY_DSN;
+  },
+
+  // ── レート制限（Upstash Redis、任意） ─────────────────────────────────
+
+  /** Upstash Redis REST URL（レート制限に使用） */
+  get UPSTASH_REDIS_REST_URL(): string | undefined {
+    return process.env.UPSTASH_REDIS_REST_URL;
+  },
+
+  /** Upstash Redis REST トークン（レート制限に使用） */
+  get UPSTASH_REDIS_REST_TOKEN(): string | undefined {
+    return process.env.UPSTASH_REDIS_REST_TOKEN;
   },
 } as const;

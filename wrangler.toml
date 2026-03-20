@@ -14,6 +14,8 @@
 #        wrangler secret put STRIPE_PRICE_ID
 #        wrangler secret put STRIPE_WEBHOOK_SECRET
 #        wrangler secret put CRON_SECRET
+#        wrangler secret put UPSTASH_REDIS_REST_URL
+#        wrangler secret put UPSTASH_REDIS_REST_TOKEN   (レート制限有効時)
 #   3. npm run deploy              (wrangler deploy)
 # -------------------------------------------------------------------
 
