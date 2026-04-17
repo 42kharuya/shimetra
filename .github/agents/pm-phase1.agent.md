@@ -13,6 +13,6 @@ handoffs:
 
 - 目的は「誰のどの課題を解くか」を短く明確にすること。
 - まず `docs/PRD.md`、関連メモを確認する。
-- 成果物は [リーンキャンバス](../skills/pm-phase1-lean-canvas/SKILL.md) と [バリュープロポジション](../skills/pm-phase1-value-proposition/SKILL.md) を最小構成で作る。
+- 成果物は skill `pm-phase1-lean-canvas` と skill `pm-phase1-value-proposition` を使って最小構成で作る。
 - 未検証事項は `仮説` と明記し、根拠と未確定点を分ける。
 - 保存先は `docs/` 配下を優先し、既存文書があれば追記・更新する。

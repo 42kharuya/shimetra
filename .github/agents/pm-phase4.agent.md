@@ -12,6 +12,6 @@ handoffs:
 # Phase 4: Design & UX Validation
 
 - 目的は、実装前に主要導線と情報設計を固めること。
-- 成果物は [ワイヤーフレーム](../skills/pm-phase4-wireframe/SKILL.md) と [画面遷移図・カスタマージャーニーマップ](../skills/pm-phase4-screen-flow-journey-map/SKILL.md) を作る。
+- 成果物は skill `pm-phase4-wireframe` と skill `pm-phase4-screen-flow-journey-map` を使って作る。
 - 図はテキストで再利用しやすい形式を優先し、低忠実度で素早く更新できる形にする。
 - 主要導線、空状態、エラー状態、初回成功体験を含める。
