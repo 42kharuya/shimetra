@@ -8,7 +8,7 @@
 | 対象       | 正となるファイル                               |
 | :--------- | :--------------------------------------------- |
 | 仕様       | `docs/PRD.md`                                  |
-| 設計       | `docs/architecture.md`                         |
+| 設計       | `docs/ARCHITECTURE.md`                         |
 | 開発ルール | `.github/copilot-instructions.md` / 本ファイル |
 
 矛盾があれば、勝手に解釈せず、必ず質問する。
