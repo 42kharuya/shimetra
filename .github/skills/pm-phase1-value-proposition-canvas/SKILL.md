@@ -3,7 +3,7 @@ name: pm-phase1-value-proposition-canvas
 description: 第1段階で顧客課題と提供価値を整理する。Jobs、Pains、Gains と、対応する Product、Pain Relievers、Gain Creators を最小構成で定義するときに使う。
 ---
 
-# Value Proposition
+# Value Proposition Canvas
 
 - バリュープロポジションキャンバス（VPC）は、顧客の課題と提供価値を対応させて整理するフレームワーク。
 - 各項目は優先順位順に並べ、上位 3 件を明示する。
