@@ -5,6 +5,7 @@
 # 参照
 
 - [プロジェクトの詳細ドキュメント](../docs)
+- [UI/UXデザイン](../docs/DESIGN.md)
 - [プロジェクトのコード関連](../src)
 - [GitHub Copilotの各種機能説明と使い方](./about/)
 - [GitHub Copilotのカスタムエージェント](./agents)
