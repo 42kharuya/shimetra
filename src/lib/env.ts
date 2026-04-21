@@ -38,11 +38,18 @@ export const envSchema = z
     // === 任意（デフォルト値あり）===
     APP_URL: z.string().url("APP_URL は有効な URL でなければなりません").default("http://localhost:3000"),
     MAGIC_LINK_EXPIRY_MINUTES: z.coerce.number().int().positive().default(30),
-    EMAIL_PROVIDER: z.enum(["console", "resend"]).default("console"),
-    ANALYTICS_PROVIDER: z.enum(["console", "segment"]).default("console"),
-    NODE_ENV: z
-      .enum(["development", "production", "test"])
-      .default("development"),
+    EMAIL_PROVIDER: z.preprocess(
+      (v) => (v === "" ? undefined : v),
+      z.enum(["console", "resend"]).default("console"),
+    ),
+    ANALYTICS_PROVIDER: z.preprocess(
+      (v) => (v === "" ? undefined : v),
+      z.enum(["console", "segment"]).default("console"),
+    ),
+    NODE_ENV: z.preprocess(
+      (v) => (v === "" ? undefined : v),
+      z.enum(["development", "production", "test"]).default("development"),
+    ),
 
     // === 条件付き必須（下記 superRefine で検証）===
     RESEND_API_KEY: z.string().optional(),
