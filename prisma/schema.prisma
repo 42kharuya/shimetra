@@ -12,7 +12,7 @@ datasource db {
   provider = "postgresql"
   // url と directUrl は Prisma v7 では schema.prisma ではなく prisma.config.ts で管理
   // CLI（migrate/push）用: prisma.config.ts の datasource.url = DIRECT_URL（直接 PostgreSQL）
-  // ランタイム用: prisma.ts の PrismaClient に DATABASE_URL（Accelerate URL）を渡す
+  // ランタイム用: prisma.ts の PrismaClient に DATABASE_URL（Neon のプール接続 URL）を渡す
 }
 
 // -----------------------------------------------

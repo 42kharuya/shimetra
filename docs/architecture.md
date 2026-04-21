@@ -10,7 +10,7 @@
   └── Next.js (App Router) on Cloudflare Workers
         ├── Middleware (Edge) — 認証ガード
         ├── Server Components / Route Handlers
-        ├── Prisma (Accelerate) — PostgreSQL
+        ├── Prisma (Neon Serverless) — PostgreSQL
         ├── Stripe — サブスク課金
         ├── Resend — メール送信
         └── Cloudflare Cron → /api/cron/notify
@@ -20,7 +20,7 @@
 | -------------- | --------------------------------------------- | -------------------------------------- |
 | ホスティング   | Cloudflare Workers + `@opennextjs/cloudflare` | Next.js をエッジで実行                 |
 | フレームワーク | Next.js 15 (App Router)                       | UI・SSR・API Routes                    |
-| DB             | PostgreSQL (Prisma Accelerate 経由)           | データ永続化                           |
+| DB             | PostgreSQL (Neon HTTP/WebSocket経由)          | データ永続化                           |
 | 認証           | マジックリンク + JWT Cookie                   | パスワードレス認証                     |
 | 課金           | Stripe サブスク                               | Free / Pro プラン管理                  |
 | メール         | Resend (ローカルは `console`)                 | マジックリンク・通知メール             |
@@ -223,7 +223,7 @@ Subscription.plan === "pro"
 
 | 変数名                      | 必須     | 説明                                                    |
 | --------------------------- | -------- | ------------------------------------------------------- |
-| `DATABASE_URL`              | ✅       | Prisma Accelerate URL                                   |
+| `DATABASE_URL`              | ✅       | Neon 接続プール URL                                     |
 | `AUTH_SECRET`               | ✅       | JWT 署名キー                                            |
 | `STRIPE_SECRET_KEY`         | ✅       | Stripe 秘密鍵                                           |
 | `STRIPE_PRICE_ID`           | ✅       | Pro プランの Price ID                                   |
