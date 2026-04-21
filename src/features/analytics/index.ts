@@ -42,6 +42,73 @@ export interface PurchaseEvent {
   currency: string;
 }
 
+// ---------------------------------------------------------------
+// LP 計測イベント型定義（クライアントサイド / dataLayer.push() 専用）
+// docs/LP.md § GA4 / GTM イベント設計表 に対応
+//
+// これらは GTM 経由で GA4 / Clarity に流すため、
+// サーバーサイドの trackEvent() ではなく window.dataLayer.push() で使う。
+// ---------------------------------------------------------------
+
+/** LP 表示時 */
+export interface LpViewedEvent {
+  event: "lp_viewed";
+  page_type: "lp";
+  page_path: string;
+  page_title: string;
+  device_type: "mobile" | "tablet" | "desktop";
+}
+
+/** Hero CTA クリック時 */
+export interface LpPrimaryCtaClickedEvent {
+  event: "lp_primary_cta_clicked";
+  cta_location: "hero";
+  cta_label: string;
+  page_type: "lp";
+}
+
+/** 下部 CTA クリック時 */
+export interface LpSecondaryCtaClickedEvent {
+  event: "lp_secondary_cta_clicked";
+  cta_location: "bottom";
+  cta_label: string;
+  page_type: "lp";
+}
+
+/** 先行登録モーダル表示時 */
+export interface LpWaitlistFormOpenedEvent {
+  event: "lp_waitlist_form_opened";
+  open_source: "hero" | "bottom";
+  page_type: "lp";
+}
+
+/** フォーム送信成功時（メールアドレス・本文は含めない） */
+export interface LpWaitlistSubmittedEvent {
+  event: "lp_waitlist_submitted";
+  form_type: "waitlist";
+  graduation_year: number;
+  hearing_opt_in: boolean | null;
+  page_type: "lp";
+}
+
+/** フォーム送信失敗時 */
+export interface LpWaitlistSubmitFailedEvent {
+  event: "lp_waitlist_submit_failed";
+  form_type: "waitlist";
+  /** "validation" | "duplicate" | "api_error" | "network_error" */
+  error_type: string;
+  page_type: "lp";
+}
+
+/** LP 計測イベントのユニオン型（dataLayer.push() の引数に使う） */
+export type LpDataLayerEvent =
+  | LpViewedEvent
+  | LpPrimaryCtaClickedEvent
+  | LpSecondaryCtaClickedEvent
+  | LpWaitlistFormOpenedEvent
+  | LpWaitlistSubmittedEvent
+  | LpWaitlistSubmitFailedEvent;
+
 export type AnalyticsEvent =
   | SignupEvent
   | ActivationEvent

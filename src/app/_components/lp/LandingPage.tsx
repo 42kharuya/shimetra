@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { LP_CONTENT } from "./content";
+import { LpPageViewTracker } from "./LpPageViewTracker";
 import { HeroSection } from "./HeroSection";
 import { ProblemSection } from "./ProblemSection";
 import { HowItWorksSection } from "./HowItWorksSection";
@@ -42,6 +43,8 @@ export function LandingPage() {
         </div>
       </header>
 
+      {/* LP 表示イベント計測（UI なし） */}
+      <LpPageViewTracker />
       <main>
         <HeroSection />
         <ProblemSection />
