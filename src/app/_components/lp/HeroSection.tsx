@@ -1,5 +1,5 @@
-import Link from "next/link";
 import { LP_CONTENT } from "./content";
+import { LeadCaptureDialog } from "./LeadCaptureDialog";
 
 /**
  * HeroSection — 誰向けの価値かを最初に伝えるセクション
@@ -27,13 +27,7 @@ export function HeroSection() {
         {hero.subCopy}
       </p>
       <div className="mt-10">
-        <Link
-          href="/login"
-          className="inline-block rounded-lg px-8 py-3.5 text-base font-medium transition-opacity hover:opacity-90"
-          style={{ backgroundColor: "#c96442", color: "#faf9f5" }}
-        >
-          {hero.ctaLabel}
-        </Link>
+        <LeadCaptureDialog label={hero.ctaLabel} ctaLocation="hero" />
       </div>
       <p className="mt-4 text-sm" style={{ color: "#87867f" }}>
         {hero.note}

@@ -1,5 +1,5 @@
-import Link from "next/link";
 import { LP_CONTENT } from "./content";
+import { LeadCaptureDialog } from "./LeadCaptureDialog";
 
 /**
  * BetaCtaSection — 下部の登録導線セクション（ダーク背景）
@@ -31,13 +31,7 @@ export function BetaCtaSection() {
           {betaCta.body}
         </p>
         <div className="mt-10">
-          <Link
-            href="/login"
-            className="inline-block rounded-lg px-8 py-3.5 text-base font-medium transition-opacity hover:opacity-90"
-            style={{ backgroundColor: "#c96442", color: "#faf9f5" }}
-          >
-            {betaCta.ctaLabel}
-          </Link>
+          <LeadCaptureDialog label={betaCta.ctaLabel} ctaLocation="bottom" dark />
         </div>
         <p className="mt-4 text-sm" style={{ color: "#87867f" }}>
           {betaCta.note}

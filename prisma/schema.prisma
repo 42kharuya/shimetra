@@ -118,6 +118,18 @@ model NotificationDelivery {
   @@map("notification_deliveries")
 }
 
+/// LP先行登録エントリ
+model WaitlistEntry {
+  id              String    @id @default(uuid()) @db.Uuid
+  email           String    @unique
+  graduationYear  Int       @map("graduation_year")
+  concerns        String?
+  hearingOptIn    Boolean?  @map("hearing_opt_in")
+  createdAt       DateTime  @default(now()) @map("created_at") @db.Timestamptz
+
+  @@map("waitlist_entries")
+}
+
 /// マジックリンク認証トークン（有効期限付き、使い捨て）
 model MagicLinkToken {
   id        String    @id @default(uuid()) @db.Uuid
