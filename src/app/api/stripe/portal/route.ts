@@ -25,7 +25,6 @@
  *  - { error: string }          500  サーバーエラー
  */
 
-export const runtime = "edge";
 export const dynamic = "force-dynamic";
 
 import { NextRequest, NextResponse } from "next/server";
