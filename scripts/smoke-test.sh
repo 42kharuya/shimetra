@@ -3,14 +3,14 @@
 # smoke-test.sh  クリティカル導線 スモークテスト
 # =============================================================================
 # 用途 : ローンチ前・デプロイ後の最低限の疎通確認（手動実行）
-# 前提 : dev サーバーが localhost:3000 で起動していること
+# 前提 : dev サーバーが localhost:8787 で起動していること
 #         (NODE_ENV=development  → magic-link の URL がターミナルに表示される)
 # 実行 : bash scripts/smoke-test.sh
 # =============================================================================
 
 set -euo pipefail
 
-BASE_URL="${BASE_URL:-http://localhost:3000}"
+BASE_URL="${BASE_URL:-http://localhost:8787}"
 PASS=0
 FAIL=0
 SKIP=0

@@ -18,7 +18,6 @@
  *  - { error: string }          401 / 405 / 500
  */
 
-export const runtime = "edge";
 export const dynamic = "force-dynamic";
 
 import { NextRequest, NextResponse } from "next/server";

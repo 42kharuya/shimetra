@@ -44,9 +44,9 @@ describe("Stripe Customer Portal", () => {
 
   it("requireEnv: 設定済みの変数は値を返す", () => {
     const key = "__TEST_PORTAL_ENV_VAR__";
-    process.env[key] = "http://localhost:3000";
+    process.env[key] = "http://localhost:8787";
     const val = requireEnv(key);
-    assert.equal(val, "http://localhost:3000");
+    assert.equal(val, "http://localhost:8787");
     delete process.env[key];
   });
 

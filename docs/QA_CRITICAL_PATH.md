@@ -88,7 +88,7 @@ bash scripts/smoke-test.sh
 **前提**: Stripe テストモード、`stripe listen` 起動済み、ログイン済み
 
 ```bash
-stripe listen --forward-to localhost:3000/api/stripe/webhook
+stripe listen --forward-to localhost:8787/api/stripe/webhook
 ```
 
 | #   | 操作                                                    | 期待値                                                  | 確認済み |
@@ -134,7 +134,7 @@ npm run db:studio
 
 ```bash
 # E-1 実行コマンド
-curl -X POST http://localhost:3000/api/cron/notify \
+curl -X POST http://localhost:8787/api/cron/notify \
   -H "Authorization: Bearer $(grep CRON_SECRET .env | cut -d= -f2)"
 ```
 

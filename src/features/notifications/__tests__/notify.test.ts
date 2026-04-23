@@ -13,7 +13,7 @@
  *
  * 1. CRON_SECRET 認証テスト
  *    a. CRON_SECRET を .env に設定した状態で以下を実行:
- *       curl -X POST http://localhost:3000/api/cron/notify \
+ *       curl -X POST http://localhost:8787/api/cron/notify \
  *         -H "Authorization: Bearer <正しいシークレット>"
  *       → { ok: true, result: { processed, sent, failed, skipped } } が返ること
  *    b. シークレットを間違えた場合:
@@ -97,7 +97,7 @@ describe("通知ロジック", () => {
       kind: "es",
       deadlineAt: new Date("2026-03-18T15:00:00Z"), // UTC → JST 2026-03-19 00:00
       offsetMinutes: 1440,
-      appUrl: "http://localhost:3000",
+      appUrl: "http://localhost:8787",
     });
     assert.ok(result.subject.includes("テスト株式会社"), "subject に企業名がない");
     assert.ok(result.subject.includes("24時間"), "subject にオフセットラベルがない");
@@ -122,7 +122,7 @@ describe("通知ロジック", () => {
       kind: "briefing",
       deadlineAt: new Date("2026-03-18T15:00:00Z"),
       offsetMinutes: 4320,
-      appUrl: "http://localhost:3000",
+      appUrl: "http://localhost:8787",
     });
     assert.ok(result.text.length > 0, "text が空");
     assert.ok(result.text.includes("72時間"), "text にオフセットラベルがない");
@@ -135,7 +135,7 @@ describe("通知ロジック", () => {
       kind: "other",
       deadlineAt: new Date("2026-03-18T15:00:00Z"),
       offsetMinutes: 1440,
-      appUrl: "http://localhost:3000",
+      appUrl: "http://localhost:8787",
     });
     // JST: 2026-03-19 00:00 が html に含まれること
     assert.ok(result.html.includes("2026-03-19 00:00"), `JST 変換が正しくない: ${result.html}`);

@@ -154,7 +154,7 @@ describe("env バリデーション", () => {
 
   it("env.APP_URL: 未設定時はデフォルト値を返す", () => {
     withEnv({ APP_URL: undefined }, () => {
-      assert.equal(env.APP_URL, "http://localhost:3000");
+      assert.equal(env.APP_URL, "http://localhost:8787");
     });
   });
 

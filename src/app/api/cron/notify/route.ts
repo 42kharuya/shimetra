@@ -13,7 +13,7 @@
  *               wrangler secret put CRON_SECRET で登録する
  *
  * 呼び出し方（例）:
- *  curl -X POST http://localhost:3000/api/cron/notify \
+ *  curl -X POST http://localhost:8787/api/cron/notify \
  *    -H "Authorization: Bearer <CRON_SECRET>"
  *
  * レスポンス:
@@ -28,7 +28,6 @@
  *  ※ schedule: 10分間隔（"星印/10 * * * *"形式、JSDoc上の都合でスペース挿入済み）
  */
 
-export const runtime = "edge";
 export const dynamic = "force-dynamic";
 
 import { NextRequest, NextResponse } from "next/server";

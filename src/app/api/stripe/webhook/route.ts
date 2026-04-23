@@ -15,7 +15,7 @@
  * 環境変数:
  *  - STRIPE_SECRET_KEY: Stripe シークレットキー（必須）
  *  - STRIPE_WEBHOOK_SECRET: Webhook エンドポイントの署名シークレット（必須）
- *    ローカル: stripe listen --forward-to localhost:3000/api/stripe/webhook で取得した whsec_xxx
+ *    ローカル: stripe listen --forward-to localhost:8787/api/stripe/webhook で取得した whsec_xxx
  *    本番: Stripe Dashboard > Developers > Webhooks で確認
  *
  * リクエスト:
@@ -28,7 +28,6 @@
  *  - { error: string }    500  サーバーエラー
  */
 
-export const runtime = "edge";
 export const dynamic = "force-dynamic";
 
 import { NextRequest, NextResponse } from "next/server";

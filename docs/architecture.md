@@ -229,7 +229,7 @@ Subscription.plan === "pro"
 | `STRIPE_PRICE_ID`           | ✅       | Pro プランの Price ID                                   |
 | `STRIPE_WEBHOOK_SECRET`     | ✅       | Webhook 署名検証キー                                    |
 | `CRON_SECRET`               | ✅       | Cron エンドポイント認証トークン                         |
-| `APP_URL`                   | —        | アプリの公開 URL（デフォルト: `http://localhost:3000`） |
+| `APP_URL`                   | —        | アプリの公開 URL（デフォルト: `http://localhost:8787`） |
 | `EMAIL_PROVIDER`            | —        | `console` \| `resend`（デフォルト: `console`）          |
 | `RESEND_API_KEY`            | 条件付き | `EMAIL_PROVIDER=resend` 時必須                          |
 | `EMAIL_FROM`                | 条件付き | 送信元メールアドレス                                    |

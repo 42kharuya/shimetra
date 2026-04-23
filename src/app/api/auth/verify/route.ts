@@ -8,7 +8,6 @@
  *   「メール確認（マジックリンクのクリック）完了 = ユーザー作成確定」
  */
 
-export const runtime = "edge";
 export const dynamic = "force-dynamic";
 
 import { NextRequest, NextResponse } from "next/server";

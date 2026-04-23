@@ -26,7 +26,6 @@
  *  - 対象アイテムの所有者のみ削除可（他ユーザーは 403）
  */
 
-export const runtime = "edge";
 export const dynamic = "force-dynamic";
 
 import { NextRequest, NextResponse } from "next/server";

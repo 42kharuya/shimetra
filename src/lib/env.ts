@@ -36,7 +36,7 @@ export const envSchema = z
     CRON_SECRET: z.string().min(1, "CRON_SECRET は必須です"),
 
     // === 任意（デフォルト値あり）===
-    APP_URL: z.string().url("APP_URL は有効な URL でなければなりません").default("http://localhost:3000"),
+    APP_URL: z.string().url("APP_URL は有効な URL でなければなりません").default("http://localhost:8787"),
     MAGIC_LINK_EXPIRY_MINUTES: z.coerce.number().int().positive().default(30),
     EMAIL_PROVIDER: z.preprocess(
       (v) => (v === "" ? undefined : v),
@@ -167,9 +167,9 @@ export const env = {
 
   // ── 任意（デフォルト値あり） ────────────────────────────────────────────
 
-  /** アプリ公開 URL（デフォルト: http://localhost:3000） */
+  /** アプリ公開 URL（デフォルト: http://localhost:8787） */
   get APP_URL(): string {
-    return process.env.APP_URL || "http://localhost:3000";
+    return process.env.APP_URL || "http://localhost:8787";
   },
 
   /** マジックリンク有効期限（分、デフォルト: 30） */
