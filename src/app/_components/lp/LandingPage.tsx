@@ -30,7 +30,7 @@ export function LandingPage() {
         <div className="mx-auto flex max-w-5xl items-center justify-between px-6 py-4">
           <div className="flex items-center gap-2">
             <Image
-              src="/favicon.ico"
+              src="/icon.png"
               alt="〆トラ ロゴ"
               width={72}
               height={72}
