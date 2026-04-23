@@ -25,6 +25,7 @@ export const dynamic = "force-dynamic";
 
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
+import { sendEmail } from "@/lib/mailer";
 
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const CURRENT_YEAR = new Date().getFullYear();
@@ -72,6 +73,42 @@ export async function POST(req: NextRequest) {
         concerns: typeof concerns === "string" && concerns.trim() ? concerns.trim() : null,
         hearingOptIn: typeof hearingOptIn === "boolean" ? hearingOptIn : null,
       },
+    });
+
+    // ── 登録完了メール送信（失敗してもコア処理には影響させない） ────────
+    sendEmail({
+      to: email.trim().toLowerCase(),
+      subject: "〆トラ 先行利用のご登録ありがとうございます",
+      html: `
+        <div style="font-family:sans-serif;max-width:480px;margin:0 auto;color:#222222;">
+          <h1 style="font-size:20px;font-weight:600;margin-bottom:16px;">ご登録ありがとうございます 🎉</h1>
+          <p style="line-height:1.7;margin-bottom:12px;">
+            〆トラの先行利用にご登録いただきありがとうございます。<br>
+            サービス開始の準備が整いましたら、このメールアドレスへご案内をお送りします。
+          </p>
+          <p style="line-height:1.7;margin-bottom:24px;">
+            もうしばらくお待ちください。引き続きよろしくお願いいたします。
+          </p>
+          <hr style="border:none;border-top:1px solid #dddddd;margin-bottom:16px;">
+          <p style="font-size:12px;color:#6a6a6a;">
+            〆トラ サポートチーム<br>
+            ご不明な点は <a href="mailto:support@shimetra.com" style="color:#ff385c;">support@shimetra.com</a> までお問い合わせください。
+          </p>
+        </div>
+      `,
+      text: [
+        "ご登録ありがとうございます。",
+        "",
+        "〆トラの先行利用にご登録いただきありがとうございます。",
+        "サービス開始の準備が整いましたら、このメールアドレスへご案内をお送りします。",
+        "",
+        "もうしばらくお待ちください。引き続きよろしくお願いいたします。",
+        "",
+        "〆トラ サポートチーム",
+        "support@shimetra.com",
+      ].join("\n"),
+    }).catch((err) => {
+      console.error("[waitlist] 登録完了メール送信エラー", err);
     });
 
     return NextResponse.json({ ok: true }, { status: 200 });
