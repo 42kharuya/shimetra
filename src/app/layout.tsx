@@ -6,6 +6,9 @@ import "./globals.css";
 export const metadata: Metadata = {
   title: "〆トラ",
   description: "締切を登録して、締切前にメール通知で出し忘れを防ぐ就活管理サービス",
+  metadataBase: new URL(
+    process.env.APP_URL ?? "https://shimetra.com",
+  ),
 };
 
 export default function RootLayout({
