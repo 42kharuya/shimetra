@@ -1,4 +1,4 @@
-import Link from "next/link";
+import Image from "next/image";
 import { LP_CONTENT } from "./content";
 import { LpPageViewTracker } from "./LpPageViewTracker";
 import { HeroSection } from "./HeroSection";
@@ -7,6 +7,7 @@ import { HowItWorksSection } from "./HowItWorksSection";
 import { BenefitSection } from "./BenefitSection";
 import { DifferenceSection } from "./DifferenceSection";
 import { BetaCtaSection } from "./BetaCtaSection";
+import { LeadCaptureDialog } from "./LeadCaptureDialog";
 
 /**
  * LP全体レイアウトを束ねる Server Component
@@ -27,19 +28,22 @@ export function LandingPage() {
         }}
       >
         <div className="mx-auto flex max-w-5xl items-center justify-between px-6 py-4">
-          <span
-            className="text-lg font-semibold"
-            style={{ color: "#222222" }}
-          >
-            〆トラ
-          </span>
-          <Link
-            href="/login"
-            className="rounded-lg px-4 py-2 text-sm font-medium transition-[transform,opacity] hover:opacity-90 active:scale-95"
-            style={{ backgroundColor: "#ff385c", color: "#ffffff" }}
-          >
-            {hero.ctaLabel}
-          </Link>
+          <div className="flex items-center gap-2">
+            <Image
+              src="/icon.png"
+              alt="〆トラ ロゴ"
+              width={72}
+              height={72}
+              className="rounded-sm"
+            />
+            <span
+              className="text-lg font-semibold"
+              style={{ color: "#222222" }}
+            >
+              〆トラ
+            </span>
+          </div>
+          <LeadCaptureDialog label={hero.ctaLabel} ctaLocation="hero" />
         </div>
       </header>
 
